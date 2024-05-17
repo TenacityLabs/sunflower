@@ -17,7 +17,11 @@
         font-family: 'Bitter';
         src: url('/fonts/Bitter/Bitter-VariableFont_wght.ttf') format('truetype');
       }
-  }
+    @font-face {
+      font-family: 'Bitter-italic';
+      src: url('/fonts/Bitter/Bitter-Italic-VariableFont_wght.ttf') format('truetype');
+    }
+}
 
 ::-webkit-scrollbar {
   display: none;

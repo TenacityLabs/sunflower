@@ -4,7 +4,7 @@
     
     const remToPixels = (rem: number) => rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
     const handleScroll = () => {
-        if (window.scrollY > remToPixels(37)) {
+        if (remToPixels(37) < window.scrollY && window.scrollY < remToPixels(58)) {
             animate = true;
         } else {
             animate = false;
@@ -34,10 +34,11 @@
             on:blur={() => animate = false}
             role="img"
         >
+            <!-- FIXME: can't use w-fit because it messes up animation, need a workaround other than a weird static width -->
             <span 
                 class="w-0 font-arya text-6xl inline-block overflow-hidden 
                 text-right transition-all duration-500 ease-in
-                {animate && 'w-[18.625rem]'}"
+                {animate && 'w-[18.625rem]'}" 
             >
                 SUNFLOWER
             </span>

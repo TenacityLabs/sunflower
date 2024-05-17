@@ -4,18 +4,22 @@ export default {
   theme: {
     fontFamily: {
       'arya': ['Arya', 'system-ui'],
-      'bitter': ['Bitter', 'system-ui']
+      'bitter': ['Bitter', 'system-ui'],
+      'bitter-italic': ['Bitter-italic', 'system-ui']
     },
     colors: {
       'offwhite': '#FFF9F5',
       'dark-brown': '#4F3A26',
       'dark-green': '#5F683C',
       'white': '#FFFFFF',
+      'darkish-brown': '#704F38',
+      'light-grey': '#B9A89A',
     },
     extend: {
       animation: {
         'spin-reveal': 'spin 0.5s linear',
         'spin-hide': 'reverse-spin 0.5s linear',
+        'wave': 'wave 3s linear infinite',
       },
       keyframes: {
         'reverse-spin': {
@@ -25,8 +29,20 @@ export default {
           to: {
             transform: 'rotate(0deg)'
           }
-        }
-      }
+        },
+        'wave': {
+          '0%, 20%, 30%': { transform: 'initial' },
+          '10%': { transform: 'translateY(-15px)' },
+        },
+      },
+      animationDelay: {
+        '0': '0s',
+        '250': '0.25s',
+        '500': '0.5s',
+      },
+      backgroundImage: {
+        'footer': "url('images/footer-bg.png')",
+      },
     },
   },
   plugins: [],
