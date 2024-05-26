@@ -10,34 +10,39 @@
     };
 
     const data = [
-      { company: 'AgentSync', industry: 'Insurance', description: 'Automatic compliance software.' },
-      { company: 'AgentSync', industry: 'Insurance', description: 'Automatic compliance software.' },
-      { company: 'AgentSync', industry: 'Insurance', description: 'Automatic compliance software.' },
-      { company: 'AgentSync', industry: 'Insurance', description: 'Automatic compliance software.' },
-      { company: 'AgentSync', industry: 'Insurance', description: 'Automatic compliance software.' },
-      { company: 'AgentSync', industry: 'Insurance', description: 'Automatic compliance software.' },
-      { company: 'AgentSync', industry: 'Insurance', description: 'Automatic compliance software.' },
+      { company: 'AgentSync', description: 'Automatic compliance software.' },
+      { company: 'AgentSync', description: 'Automatic compliance software.' },
+      { company: 'AgentSync', description: 'Automatic compliance software.' },
+      { company: 'AgentSync', description: 'Automatic compliance software.' },
+      { company: 'AgentSync', description: 'Automatic compliance software.' },
+      { company: 'AgentSync', description: 'Automatic compliance software.' },
+      { company: 'AgentSync', description: 'Automatic compliance software.' },
+      { company: 'AgentSync', description: 'Automatic compliance software.' },
+      { company: 'AgentSync', description: 'Automatic compliance software.' },
+      { company: 'AgentSync', description: 'Automatic compliance software.' },
+      { company: 'AgentSync', description: 'Automatic compliance software.' },
     ];
     
-    // FIXME: Make table expand more naturally
     const updateTable = () => {
-        const tableBody = document.getElementById('table-body');
-        if (tableBody) {
-            tableBody.innerHTML = '';
-            display = truncate ? data.slice(0, 4) : data;
-            display.forEach(item => {
-
+    const tableBody = document.getElementById('table-body');
+    if (tableBody) {
+        tableBody.innerHTML = '';
+        data.forEach(item => {
             const row = document.createElement('tr');
-            row.classList.add('border-b', 'border-dark-green', 'text-2xl', 'py-8', 'h-16');
+            row.classList.add('relative', 'text-2xl', 'py-8', 'h-16', 'custom-border-row');
             row.innerHTML = `
                 <td class="px-4 font-bitter-italic font-light text-4xl">${item.company}</td>
-                <td class="px-4 font-bitter">${item.industry}</td>
-                <td class="px-4 font-bitter">${item.description}</td>
+                <td class="px-4 font-bitter font-light text-3xl">${item.description}</td>
             `;
             tableBody.appendChild(row);
         });
-        }
-    };
+    }
+};
+
+onMount(() => {
+    updateTable();
+});
+
 
     onMount(() => {
         updateTable();
@@ -46,14 +51,31 @@
 </script>
 
 <!-- FIXME: Really glitchy on load, need to make smoother somehow -->
-<div class="bg-offwhite min-h-screen w-screen flex items-center">
-    <div class="pl-24 w-10/12">
-        <div class="font-bitter text-6xl text-dark-brown leading-[7.5rem] pb-24">
-            Sunflower Capital funds early-stage companies building for the
+<div class="bg-offwhite min-h-screen w-screen flex flex-row items-center">
+    <div class="pl-36 w-3/5 pt-20">
+        <div class="font-bitter text-7xl text-darkish-brown leading-[7.5rem] pb-24 pr-10">
+            Sunflower Capital funds early-stage companies building for the <br>
             <span class="text-white bg-dark-green p-3">modern enterprise.</span>
         </div>
-        <img src='/images/downarrow.svg' alt="arrow" />
     </div>
+    <img 
+                src="/images/big-sunflower.svg" 
+                alt="Sunflower" 
+                class="max-h-[50rem] w-auto pr-3"
+    />
+</div>
+
+<div class="bg-offwhite min-h-screen w-screen flex flex-row items-center px-32">
+    <div class="pl-36 w-2/3 pt-20">
+        <div class="font-bitter text-5xl text-darkish-brown leading-[6rem] pb-24 pr-10">
+            Value statement or description. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.
+        </div>
+    </div>
+    <img 
+                src="/images/seeds.png" 
+                alt="Sunflower" 
+                class="max-h-96 w-auto pr-3"
+    />
 </div>
 
 <div class="bg-offwhite w-full pl-24 pr-60">
@@ -62,40 +84,33 @@
             <h1 class="font-arya text-black text-7xl">INVESTMENTS</h1>
             <h2 class="font-bitter-italic text-darkish-brown text-4xl underline">Portfolio</h2>
         </div>
-        <div class="flex flex-col w-full">
+    <div class="flex items-center space-x-4 py-4">
+        <span class="text-black">•</span>
+        <span class="font-bitter text-xl text-black">All</span>
+        <span class="text-black">•</span>
+        <span class="font-bitter text-xl text-black">Filter</span>
+        <span class="text-black">•</span>
+        <span class="font-bitter text-xl text-black">Filter</span>
+        <span class="text-black">•</span>
+        <span class="font-bitter text-xl text-black">Filter</span>
+        <span class="text-black">•</span>
+        <span class="font-bitter text-xl text-black">Filter</span>
+    </div>
+        <div class="flex flex-col w-full h-96 overflow-y-auto custom-scrollbar">
             <table class="min-w-full border-collapse">
-                <thead>
-                    <tr class="border-b border-dark-green font-bitter font-bold text-2xl">
-                        <th class="text-left px-4 py-2 text-darkish-brown font-semibold">Company</th>
-                        <th class="text-left px-4 py-2 text-darkish-brown font-semibold">Industry</th>
-                        <th class="text-left px-4 py-2 text-darkish-brown font-semibold">Description</th>
-                    </tr>
-                </thead>
                 <tbody class="font-bitter-italic text-2xl" id="table-body"></tbody>
             </table>
-            <div 
-            class="flex items-center justify-start space-x-1 font-bitter text-3xl pt-2 pl-2"
-            on:click={toggleTruncate}
-            on:keydown={toggleTruncate}
-            role="button"
-            tabindex="0"
-            >
-                    <span class="inline-block animate-wave delay-1">.</span>
-                    <span class="inline-block animate-wave delay-2">.</span>
-                    <span class="inline-block animate-wave delay-3">.</span>
-            </div>
         </div>
     </div>
 </div>
 
-<style global>
-    .delay-1 {
-      animation-delay: 0s;
-    }
-    .delay-2 {
-      animation-delay: 0.25s;
-    }
-    .delay-3 {
-      animation-delay: 0.5s; 
-    }
-  </style>
+<div class="bg-offwhite min-h-screen w-screen flex flex-row items-center justify-start px-32">
+    <div class="pl-36 w-2/3">
+        <div class="font-bitter text-7xl text-darkish-brown leading-[6rem] pb-12 pr-10">
+            CTA. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        </div>
+        <div class="text-black font-bitter text-2xl font-light">
+            liu@sunflowercapital.co
+        </div>
+    </div>
+</div>

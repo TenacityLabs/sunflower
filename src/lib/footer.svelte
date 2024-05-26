@@ -1,3 +1,15 @@
-<div class=" flex justify-start items-center w-screen h-24 bg-footer bg-dark-brown">
-    <h1 class="font-bitter text-light-grey pl-8">Created with Tenacity Labs</h1>
+<script>
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+<div 
+    class="flex justify-center items-center w-screen h-24 bg-offwhite" 
+    on:click={scrollToTop} 
+    on:keypress={scrollToTop}
+    role='button'
+    tabindex="0"
+    >
+    <h1 class="font-bitter text-darkish-brown pl-8">↑ Back to Top © Sunflower Capital 2024</h1>
 </div>

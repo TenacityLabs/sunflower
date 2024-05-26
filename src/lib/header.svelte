@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
     import { onMount, onDestroy } from 'svelte';
     let animate = false;
     
@@ -22,31 +22,23 @@
             window.removeEventListener('scroll', handleScroll);
         }
     });
-</script>
+</script> -->
 
-<nav class="fixed top-0">
+<nav class="fixed top-0 w-screen bg-offwhite z-40">
     <div class="flex w-full justify-left">
         <div 
             class="relative flex items-center p-8"
-            on:mouseover={() => animate = true}
-            on:focus={() => animate = true}
-            on:mouseleave={() => animate = false}
-            on:blur={() => animate = false}
-            role="img"
         >
-            <!-- FIXME: can't use w-fit because it messes up animation, need a workaround other than a weird static width -->
-            <span 
-                class="w-0 font-arya text-6xl inline-block overflow-hidden 
-                text-right transition-all duration-500 ease-in
-                {animate && 'w-[18.625rem]'}" 
-            >
-                SUNFLOWER
-            </span>
             <img 
                 src="/images/sunflower.svg" 
                 alt="Sunflower" 
-                class="max-h-16 w-auto {animate ? 'animate-spin-reveal' : 'animate-spin-hide'}"
+                class="max-h-16 w-auto pr-3"
             />
+            <span 
+            class="w-fit font-arya text-6xl tracking-widest"
+        >
+            SUNFLOWER CAPITAL
+        </span>
         </div>
     </div>
 </nav>
