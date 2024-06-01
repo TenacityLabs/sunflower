@@ -9,6 +9,13 @@
         updateTable();
     };
 
+    function scrollDown() {
+        const element = document.getElementById('midsection');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
     const data = [
       { company: 'AgentSync', description: 'Automatic compliance software.' },
       { company: 'AgentSync', description: 'Automatic compliance software.' },
@@ -51,21 +58,22 @@ onMount(() => {
 </script>
 
 <!-- FIXME: Really glitchy on load, need to make smoother somehow -->
-<div class="bg-offwhite min-h-screen w-screen flex flex-row items-center">
-    <div class="pl-36 w-3/5 pt-20">
-        <div class="font-bitter text-7xl text-darkish-brown leading-[7.5rem] pb-24 pr-10">
-            Sunflower Capital funds early-stage companies building for the <br>
+<div class="bg-offwhite min-h-screen w-screen flex flex-col items-center justify-center">
+    <div class="pt-20 w-4/5 font-bitter text-6xl text-darkish-brown leading-[7.5rem] pb-24 text-center">
+            Sunflower Capital funds early-stage companies building for the
             <span class="text-white bg-dark-green p-3">modern enterprise.</span>
-        </div>
     </div>
-    <img 
-                src="/images/big-sunflower.svg" 
-                alt="Sunflower" 
-                class="max-h-[50rem] w-auto pr-3"
-    />
+    <div
+    on:click={scrollDown} 
+    on:keypress={scrollDown}
+    role='button'
+    tabindex="0"
+    >
+    <img src='/images/downarrow.svg' alt="arrow" />
+    </div>
 </div>
 
-<div class="bg-offwhite w-screen flex flex-row items-center px-32 py-48">
+<div class="bg-offwhite w-screen flex flex-row items-center px-32 py-48" id='midsection'>
     <div class="pl-36 w-2/3 pt-20">
         <div class="font-bitter text-5xl text-darkish-brown leading-[6rem] pb-24 pr-10">
             Value statement or description. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.
@@ -79,7 +87,7 @@ onMount(() => {
 </div>
 
 <div class="bg-offwhite w-full pl-24 pr-60">
-    <div class="flex flex-col pb-72 pt-16">
+    <div class="flex flex-col pt-16">
         <div class="flex flex-row justify-between items-center w-full pb-12">
             <h1 class="font-arya text-black text-7xl">INVESTMENTS</h1>
             <h2 class="font-bitter-italic text-darkish-brown text-4xl underline">Portfolio</h2>
@@ -104,8 +112,8 @@ onMount(() => {
     </div>
 </div>
 
-<div class="bg-offwhite w-screen flex flex-row items-center justify-start px-32">
-    <div class="pl-36 pb-72 w-2/3">
+<div class="bg-offwhite min-h-screen w-screen flex flex-row items-center justify-start px-32">
+    <div class="pl-36 w-2/3">
         <div class="font-bitter text-7xl text-darkish-brown leading-[6rem] pb-12 pr-10">
             CTA. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </div>
