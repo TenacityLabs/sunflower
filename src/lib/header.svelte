@@ -27,7 +27,7 @@
 <nav class="fixed top-0 w-screen bg-offwhite z-40">
     <div class="flex w-full justify-left">
         <div 
-            class="relative flex items-center p-8"
+            class="relative flex items-center p-4"
         >
             <img 
                 src="/images/sunflower.svg" 
