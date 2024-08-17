@@ -8,7 +8,7 @@ export default {
       'bitter-italic': ['Bitter-italic', 'system-ui']
     },
     colors: {
-      'offwhite': '#FFF9F5',
+      'offwhite': '#FFF9DE',
       'dark-brown': '#4F3A26',
       'dark-green': '#5F683C',
       'white': '#FFFFFF',

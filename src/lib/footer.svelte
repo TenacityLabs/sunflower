@@ -4,7 +4,7 @@
     }
 </script>
 
-<div class="flex justify-center items-center w-screen h-24 bg-offwhite">
+<div class="flex justify-center items-center w-screen h-24 bg-offwhite" id="footer">
     <div
     on:click={scrollToTop} 
     on:keypress={scrollToTop}
