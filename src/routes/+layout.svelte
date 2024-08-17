@@ -9,5 +9,5 @@
 </head>
 <!-- <Header /> -->
 <slot />
-<!-- <Footer /> -->
+<Footer />
 
