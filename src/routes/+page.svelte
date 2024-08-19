@@ -202,9 +202,9 @@
 
     function onScroll(handle: boolean) {
 
-        console.log(window.scrollY);
-        console.log(document.documentElement.scrollTop)
-        console.log(document.documentElement.offsetHeight)
+        // console.log(window.scrollY);
+        // console.log(document.documentElement.scrollTop)
+        // console.log(document.documentElement.offsetHeight)
 
         if (window.scrollY > 0) {
             scrolled = true;
@@ -215,10 +215,10 @@
         let currentScrollTop = document.documentElement.scrollTop;
 
         if (currentScrollTop > lastScrollTop) {
-            console.log('down');
+            // console.log('down');
             scrollingDown = true;
         } else if (currentScrollTop < lastScrollTop) {
-            console.log('up');
+            // console.log('up');
             scrollingDown = false;
         }
 
@@ -233,7 +233,7 @@
 
     onMount(() => {
 
-        console.log(window.innerHeight, window.innerWidth)
+        // console.log(window.innerHeight, window.innerWidth)
 
         loaded = true;
 
