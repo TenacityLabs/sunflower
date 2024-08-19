@@ -17,8 +17,7 @@ export default {
     },
     extend: {
       animation: {
-        'spin-reveal': 'spin 0.5s linear',
-        'spin-hide': 'reverse-spin 0.5s linear',
+        'spin': 'spin 1s linear infinite',
         'wave': 'wave 3s linear infinite',
       },
       keyframes: {
@@ -43,6 +42,9 @@ export default {
       backgroundImage: {
         'footer': "url('images/footer-bg.png')",
       },
+      transitionDuration: {
+        '2000': '2000ms',
+      }
     },
   },
   plugins: [],

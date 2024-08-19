@@ -7,7 +7,15 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<!-- <Header /> -->
-<slot />
-<!-- <Footer /> -->
+<body>
+  <!-- <Header /> -->
+  <slot />
+  <!-- <Footer /> -->
+</body>
+
+<style lang="css">
+  body {
+    overflow-x: hidden;
+  }
+</style>
 
