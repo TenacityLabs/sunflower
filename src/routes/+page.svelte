@@ -1,17 +1,13 @@
-<!-- <script>
-	import Hero from "$lib/hero.svelte";
-    import Arrow from '$lib/arrow.svelte';
-</script> -->
-
 <script lang="ts">
     import { onMount, onDestroy } from 'svelte';
     import Arrow from '$lib/arrow.svelte';
 
-    let filter = "All"
+    // let filter = "All"
     let scrolled = false;
     let loaded = false;
     let visible = false;
     let handle = true;
+    let expand = false;
     let lastScrollTop = 0;
     let scrollingDown = true;
     let background: HTMLDivElement | null = null;
@@ -73,31 +69,55 @@
 
     const industries = [...new Set(data.map(item => item.industry))];
 
-    const getFilteredData = () => {
-        if (filter === "All") {
-            return data;
+    let filter = { filter: "All" };
+
+    const handler = {
+        set: function(obj: { [x: string]: any; }, prop: string | number, value: string) {
+            document.querySelectorAll('.table-row').forEach(row => {
+                row.classList.add('hidden');
+                row.classList.remove('opacity-0', 'opacity-100');
+                setTimeout(() => {
+                    if (value == row.id || value == "All") {
+                        row.classList.remove('hidden');
+                        row.classList.add('opacity-0');
+                        (row as HTMLElement).offsetHeight;
+                        row.classList.add('opacity-100');
+                    }
+                }, 50);
+
+            });
+            obj[prop] = value;
+            return true;
         }
-        return data.filter(item => item.industry === filter);
     };
 
-    const updateTable = () => {
-        const tableBody = document.getElementById('table-body');
-        if (tableBody) {
-            tableBody.innerHTML = '';
-            const filteredData = getFilteredData();
-            filteredData.forEach(item => {
-                const row = document.createElement('tr');
-                row.classList.add('relative', 'py-4', 'h-16', 'custom-border-row');
-                row.innerHTML = `
-                    <td class="px-2 sm:px-4 font-bitter font-normal text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
-                        <a href="${item.link}" target="_blank" class="text-inherit hover:cursor-pointer">${item.company}</a>
-                    </td>
-                    <td class="px-2 sm:px-4 font-bitter font-light text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">${item.description}</td>
-                    ${filter == "All" ? `<td class="px-2 sm:px-4 font-bitter-italic font-light text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">${item.industry}</td>` : ''}`;
-                tableBody.appendChild(row);
-            });
-        }
-    };
+    const proxyData = new Proxy(filter, handler);
+
+    // const getFilteredData = () => {
+    //     if (filter === "All") {
+    //         return data;
+    //     }
+    //     return data.filter(item => item.industry === filter);
+    // };
+
+    // const updateTable = () => {
+    //     const tableBody = document.getElementById('table-body');
+    //     if (tableBody) {
+    //         tableBody.innerHTML = '';
+    //         const filteredData = getFilteredData();
+    //         filteredData.forEach(item => {
+    //             const row = document.createElement('tr');
+    //             row.classList.add('relative', 'py-4', 'h-16', 'custom-border-row');
+    //             row.innerHTML = `
+    //                 <td class="px-2 sm:px-4 font-bitter font-normal text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
+    //                     <a href="${item.link}" target="_blank" class="text-inherit hover:cursor-pointer">${item.company}</a>
+    //                 </td>
+    //                 <td class="px-2 sm:px-4 font-bitter font-light text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">${item.description}</td>
+    //                 ${filter == "All" ? `<td class="px-2 sm:px-4 font-bitter-italic font-light text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">${item.industry}</td>` : ''}`;
+    //             tableBody.appendChild(row);
+    //         });
+    //     }
+    // };
 
     function easeInOutQuad(t: number) {
         return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -202,9 +222,9 @@
 
     function onScroll(handle: boolean) {
 
-        console.log(window.scrollY);
-        console.log(document.documentElement.scrollTop)
-        console.log(document.documentElement.offsetHeight)
+        // console.log(window.scrollY);
+        // console.log(document.documentElement.scrollTop)
+        // console.log(document.documentElement.offsetHeight)
 
         if (window.scrollY > 0) {
             scrolled = true;
@@ -215,10 +235,10 @@
         let currentScrollTop = document.documentElement.scrollTop;
 
         if (currentScrollTop > lastScrollTop) {
-            console.log('down');
+            // console.log('down');
             scrollingDown = true;
         } else if (currentScrollTop < lastScrollTop) {
-            console.log('up');
+            // console.log('up');
             scrollingDown = false;
         }
 
@@ -231,13 +251,35 @@
         if (handle) {handleScroll();};
     }
 
+    function expandFlower() {
+        const flower = document.getElementById('center-flower');
+        const message = document.getElementById('full-screen-message');
+        if (!flower || !message) return;
+
+        expand = true;
+        flower.classList.add('expand');
+
+        // Wait for the expansion to finish before showing the message
+        setTimeout(() => {
+            message.classList.add('opacity-100');
+        }, 2000); // Match this with the transition duration
+
+        // After 2 more seconds, hide the message and flower
+        setTimeout(() => {
+            flower.classList.remove('expand');
+            message.classList.remove('opacity-100');
+
+            // Optionally reset flower visibility if needed
+        }, 4000); // 2 seconds for the expansion + 2 seconds to display the message
+    }
+
     onMount(() => {
 
-        console.log(window.innerHeight, window.innerWidth)
+        // console.log(window.innerHeight, window.innerWidth)
 
         loaded = true;
 
-        updateTable();
+        // updateTable();
 
         let lastScrollTop = parseInt(localStorage.getItem('lastScrollTop') || '0', 10);
 
@@ -254,8 +296,8 @@
 
         document.querySelectorAll('.filter').forEach(button => {
             button.addEventListener('click', function() {
-                filter = button.id;
-                updateTable();
+                proxyData.filter = button.id;
+                // filter = button.id;
             });
         });
 
@@ -276,7 +318,17 @@
 </script>
 
 <div id="background" bind:this={background} class="w-full h-[200vh] relative bg-[#03351A] overflow-x-hidden">
-    <div id="center-flower" bind:this={centerflower} class="z-10 flower-4 bg-[url('/images/flower-4.svg')] bg-contain bg-no-repeat transition-opacity delay-100 duration-2000 {visible ? 'opacity-100' : 'opacity-0'}"></div>
+    <div 
+        id="center-flower" 
+        bind:this={centerflower} 
+        class="z-10 flower-4 bg-[url('/images/flower-4.svg')] bg-contain bg-no-repeat 
+        transition-opacity delay-100 duration-2000 object-center
+        {visible ? 'opacity-100' : 'opacity-0'}"
+        ></div>
+    
+    <div id="full-screen-message" class="fixed inset-0 flex items-center justify-center bg-yellow-500 text-white text-4xl sm:text-6xl font-bold opacity-0 transition-opacity duration-500">
+        GROW WITH SUNFLOWER CAPITAL
+    </div>  
     <div bind:this={section1} class="w-full h-screen relative overflow-hidden">
         <div class="title font-arya font-bold transition-all duration-1000 {scrolled ? 'text-offwhite/0' : 'text-offwhite'} {loaded ? 'top-0' : '-top-full'}">SUNFLOWER CAPITAL</div>
         <div class="flower flower-1 bg-[url('/images/flower-1.svg')] bg-contain bg-no-repeat"></div>
@@ -297,87 +349,74 @@
         <div class="flower flower-17 bg-[url('/images/flower-17.svg')] bg-contain bg-no-repeat"></div>
     </div>
     
-    <div bind:this={section2} class="h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+    <div bind:this={section2} class="h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24">
         <img
-        src="/images/sunflower-logo.svg"
-        alt="Sunflower"
-        class="h-28 w-auto"
+            src="/images/sunflower-logo.svg"
+            alt="Sunflower"
+            class="h-24 sm:h-28 w-auto"
         />
-        <div class="pt-20 w-4/5 font-bitter text-[3.2vw] text-[#010101] sm:leading-[7.5rem] pb-24 text-center">
-                Sunflower Capital funds early-stage companies building for the modern enterprise.
+        <div class="pt-12 sm:pt-20 w-full sm:w-4/5 font-bitter text-[6vw] sm:text-[4vw] lg:text-[2.5vw] text-[#010101] leading-tight sm:leading-[5rem] lg:leading-[7.5rem] pb-12 sm:pb-24 text-center">
+            Sunflower Capital funds early-stage companies building for the modern enterprise.
         </div>
-    </div>
+    </div>    
 </div>
 
-<div class="bg-offwhite w-full h-screen flex justify-center items-center px-32">
+<div class="bg-offwhite w-full min-h-screen flex justify-center items-center px-4 sm:px-8 lg:px-32">
     <div class="flex flex-col w-full">
         <div class="flex flex-row justify-between items-center w-full">
-            <h1 class="font-arya text-black text-7xl">PORTFOLIO COMPANIES</h1>
+            <h1 class="font-arya text-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl">PORTFOLIO COMPANIES</h1>
         </div>
         <div class="flex flex-wrap items-center gap-4 py-4">
-            <button id="All" class="flex flex-row items-center justify-center font-bitter text-lg filter">
-                <div class="w-3 h-3 mr-3 {filter == 'All' ? 'bg-[#010101]' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
+            <button id="All" class="flex flex-row items-center justify-center font-bitter text-sm sm:text-lg filter">
+                <div class="w-3 h-3 mr-2 sm:mr-3 {proxyData.filter == 'All' ? 'bg-[#010101]' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
                 All
             </button>
             
             {#each industries as industry}
-                <button id={industry} class="flex flex-row items-center justify-center font-bitter text-lg filter">
-                    <div class="w-3 h-3 mr-3 {filter == industry ? 'bg-[#010101]' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
+                <button id={industry} class="flex flex-row items-center justify-center font-bitter text-sm sm:text-lg filter">
+                    <div class="w-3 h-3 mr-2 sm:mr-3 {proxyData.filter == industry ? 'bg-[#010101]' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
                     {industry}
                 </button>
             {/each}
         </div>
-        <div class="flex flex-col w-full h-[32rem] overflow-y-auto custom-scrollbar">
+        <div class="flex flex-col w-full h-[24rem] sm:h-[32rem] overflow-y-auto custom-scrollbar">
             <table class="min-w-full border-collapse">
-                <tbody class="font-bitter-italic text-2xl" id="table-body"></tbody>
+                <tbody class="font-bitter-italic text-base sm:text-xl md:text-2xl" id="table-body">
+                    {#each data as item}
+                    <tr id={item.industry} class="relative h-12 sm:h-16 py-2 sm:py-4 custom-border-row table-row transition-all duration-500">
+                        <td class="px-2 sm:px-4 font-bitter font-normal text-sm md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
+                            <a href="{item.link}" target="_blank" class="text-inherit hover:cursor-pointer">{item.company}</a>
+                        </td>
+                        <td class="px-2 sm:px-4 font-bitter font-light text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{item.description}</td>
+                        {#if proxyData.filter == "All"}
+                            <td class="px-2 sm:px-4 font-bitter-italic font-light text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{item.industry}</td>
+                        {/if}
+                    </tr>
+                    {/each}
+                </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<div id="contact" class="bg-offwhite h-screen w-full flex flex-row items-center justify-center px-96">
-    <div class="h-1/3 w-1/3 mt-24 bg-[url('/images/sample.svg')] bg-contain bg-no-repeat">
+<div id="contact" class="bg-offwhite h-screen w-full flex flex-col lg:flex-row items-center justify-center px-8 lg:px-24 xl:px-48">
+    <div class="h-48 w-48 lg:h-1/3 lg:w-1/3 mt-12 lg:mt-24 bg-[url('/images/sample.svg')] bg-contain bg-no-repeat">
     </div>
-    <div class="flex flex-col items-center justify-center w-1/2 h-1.3 mt-24 gap-12">
-        <div class="font-bitter text-4xl text-[#010101] w-full text-justify">
+    <div class="flex flex-col items-center justify-center w-full lg:w-1/2 h-auto mt-8 lg:mt-24 gap-6 lg:gap-12">
+        <div class="font-bitter text-2xl sm:text-3xl lg:text-4xl text-[#010101] w-full text-center lg:text-justify">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore.
         </div>
-        <div class="font-bitter text-2xl text-[#03351A] text-left w-full">
+        <div class="font-bitter text-xl sm:text-2xl text-[#03351A] text-center lg:text-left w-full">
             — Liu Jiang, <span class="font-bitter-italic">Sunflower Capital</span>
         </div>
     </div>
-</div> 
-
-<!-- <div class="bg-offwhite w-screen flex flex-row items-center px-32 py-48" id='midsection'>
-    <div class="pl-36 w-2/3 pt-20">
-        <div class="font-bitter text-5xl text-darkish-brown leading-[6rem] pb-24 pr-10">
-            Value statement or description. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.
-        </div>
-    </div>
-    <img 
-                src="/images/seeds.png" 
-                alt="Sunflower" 
-                class="max-h-96 w-auto pr-3"
-    />
-</div> -->
-
+</div>
 
 <style lang="css">
-    .snap {
-        scroll-snap-align: end; /* Align each section to the start */
-    }
-
     .title {
         position: relative;
         font-size: 19vw;
         line-height: 67%;
-    }
-
-    .fade-in { animation: fadeIn 1s; }
-
-    @keyframes fadeIn {
-        0% { opacity: 0; }
-        100% { opacity: 1; }
     }
 
     .flower {
@@ -405,10 +444,10 @@
         left: 29vw;
     }
 
-    .flower-4 {     
-        position: absolute;   
-        width: 15vw;
+    .flower-4 {
+        position: absolute;
         height: 15vw;
+        width: 15vw;
         top: 53.5vh;
         left: 42.5vw;
     }
@@ -502,5 +541,10 @@
         height: 13vw;
         top: 73vh;
         left: 87.5vw;
+    }
+
+    #full-screen-message {
+        z-index: 30;
+        pointer-events: none;
     }
 </style>
