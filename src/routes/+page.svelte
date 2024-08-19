@@ -1,5 +1,11 @@
+<!-- <script>
+	import Hero from "$lib/hero.svelte";
+    import Arrow from '$lib/arrow.svelte';
+</script> -->
+
 <script lang="ts">
     import { onMount, onDestroy } from 'svelte';
+    import Arrow from '$lib/arrow.svelte';
 
     let filter = "All"
     let scrolled = false;
@@ -86,29 +92,26 @@
                     <td class="px-2 sm:px-4 font-bitter font-normal text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
                         <a href="${item.link}" target="_blank" class="text-inherit hover:cursor-pointer">${item.company}</a>
                     </td>
-                    <td class="px-2 sm:px-4 font-bitter font-normal text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
-                        <a href="${item.link}" target="_blank" class="text-inherit hover:cursor-pointer">${item.company}</a>
-                    </td>
                     <td class="px-2 sm:px-4 font-bitter font-light text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">${item.description}</td>
-                    ${filter === "All" ? `<td class="px-2 sm:px-4 font-bitter-italic font-light text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">${item.industry}</td>` : ''}`;
+                    ${filter == "All" ? `<td class="px-2 sm:px-4 font-bitter-italic font-light text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">${item.industry}</td>` : ''}`;
                 tableBody.appendChild(row);
             });
         }
     };
 
-    function easeInOutQuad(t) {
+    function easeInOutQuad(t: number) {
         return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
     }
 
-    function scrollToElement(element, scrollingDown) {
+    function scrollToElement(element: HTMLDivElement | null, scrollingDown: boolean) {
         if (!element) return;
 
         const start = window.scrollY;
         const end = element.getBoundingClientRect().top + start;
         const duration = 2000;
-        let startTime = null;
+        let startTime: number | null = null;
 
-        function animateScroll(currentTime) {
+        function animateScroll(currentTime: number) {
             if (startTime === null) startTime = currentTime;
             const timeElapsed = currentTime - startTime;
             const progress = Math.min(timeElapsed / duration, 1);
@@ -152,16 +155,16 @@
     }
 
     function parallax() {
-        document.querySelectorAll('.flower').forEach(element => {
-            element.style.marginTop = (-window.scrollY * scrollFactor) + "px";
+        document.querySelectorAll('.flower').forEach((element) => {
+            (element as HTMLElement).style.marginTop = (-window.scrollY * scrollFactor).toString() + "px";
         });
 
         if (centerflower) {
-            centerflower.style.marginTop = (window.scrollY * 0.5) + "px";
+            centerflower.style.marginTop = (window.scrollY * 0.5).toString() + "px";
         }
     }
 
-    function changeBackgroundColorOnScroll(element, progress, scrollingDown) {
+    function changeBackgroundColorOnScroll(element: HTMLElement, progress: number, scrollingDown: boolean) {
         const colorStart = '#03351A'; // Color 1
         const colorEnd = '#FFF9DE'; // Color 2
 
@@ -176,8 +179,8 @@
         element.style.backgroundColor = newColor;
     }
 
-    function interpolateColor(color1, color2, factor) {
-        const hex = x => {
+    function interpolateColor(color1: string, color2: string, factor: number): string {
+        const hex = (x: number) => {
             const hexString = x.toString(16);
             return hexString.length === 1 ? '0' + hexString : hexString;
         };
@@ -197,7 +200,12 @@
         return `#${hex(r)}${hex(g)}${hex(b)}`;
     }
 
-    function onScroll(handle) {
+    function onScroll(handle: boolean) {
+
+        console.log(window.scrollY);
+        console.log(document.documentElement.scrollTop)
+        console.log(document.documentElement.offsetHeight)
+
         if (window.scrollY > 0) {
             scrolled = true;
         } else {
@@ -207,8 +215,10 @@
         let currentScrollTop = document.documentElement.scrollTop;
 
         if (currentScrollTop > lastScrollTop) {
+            console.log('down');
             scrollingDown = true;
         } else if (currentScrollTop < lastScrollTop) {
+            console.log('up');
             scrollingDown = false;
         }
 
@@ -218,12 +228,13 @@
 
         lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
 
-        if (handle) {
-            handleScroll();
-        }
+        if (handle) {handleScroll();};
     }
 
     onMount(() => {
+
+        console.log(window.innerHeight, window.innerWidth)
+
         loaded = true;
 
         updateTable();
@@ -249,52 +260,21 @@
         });
 
         if (window.scrollY > 0) {
-            visible = false;
-        } else {
-            visible = true;
+                visible = false;
+            } else {
+                visible = true;
         }
 
         (document.body).addEventListener('touchmove', function () {
             onScroll(handle);
         }); 
-
         window.addEventListener('scroll', function() {
             onScroll(handle);
         });
     });
+
 </script>
 
-<div id="background" bind:this={background} class="w-full h-[200vh] relative bg-[#03351A] overflow-x-hidden">
-    <div id="center-flower" bind:this={centerflower} class="z-10 flower-4 bg-[url('/images/flower-4.svg')] bg-contain bg-no-repeat transition-opacity delay-100 duration-2000 {visible ? 'opacity-100' : 'opacity-0'}"></div>
-    <div bind:this={section1} class="w-full h-screen relative overflow-hidden">
-        <div class="title font-arya font-bold transition-all duration-1000 {scrolled ? 'text-offwhite/0' : 'text-offwhite'} {loaded ? 'top-0' : '-top-full'}">SUNFLOWER CAPITAL</div>
-        <div class="flower flower-1 bg-[url('/images/flower-1.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-2 bg-[url('/images/flower-2.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-3 bg-[url('/images/flower-3.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-5 bg-[url('/images/flower-5.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-6 bg-[url('/images/flower-6.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-7 bg-[url('/images/flower-7.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-8 bg-[url('/images/flower-8.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-9 bg-[url('/images/flower-9.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-10 bg-[url('/images/flower-10.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-11 bg-[url('/images/flower-11.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-12 bg-[url('/images/flower-12.svg')] bg-contain bg-no-repeat hover:animate-spin"></div>
-        <div class="flower flower-13 bg-[url('/images/flower-13.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-14 bg-[url('/images/flower-14.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-15 bg-[url('/images/flower-15.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-16 bg-[url('/images/flower-16.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-17 bg-[url('/images/flower-17.svg')] bg-contain bg-no-repeat"></div>
-    </div>
-    
-    <div bind:this={section2} class="h-screen w-full flex flex-col items-center justify-center overflow-hidden">
-        <img
-        src="/images/sunflower-logo.svg"
-        alt="Sunflower"
-        class="h-28 w-auto"
-        />
-        <div class="pt-20 w-4/5 font-bitter text-[3.2vw] text-[#010101] sm:leading-[7.5rem] pb-24 text-center">
-                Sunflower Capital funds early-stage companies building for the modern enterprise.
-        </div>
 <div id="background" bind:this={background} class="w-full h-[200vh] relative bg-[#03351A] overflow-x-hidden">
     <div id="center-flower" bind:this={centerflower} class="z-10 flower-4 bg-[url('/images/flower-4.svg')] bg-contain bg-no-repeat transition-opacity delay-100 duration-2000 {visible ? 'opacity-100' : 'opacity-0'}"></div>
     <div bind:this={section1} class="w-full h-screen relative overflow-hidden">
@@ -335,7 +315,6 @@
             <h1 class="font-arya text-black text-7xl">PORTFOLIO COMPANIES</h1>
         </div>
         <div class="flex flex-wrap items-center gap-4 py-4">
-        <div class="flex flex-wrap items-center gap-4 py-4">
             <button id="All" class="flex flex-row items-center justify-center font-bitter text-lg filter">
                 <div class="w-3 h-3 mr-3 {filter == 'All' ? 'bg-[#010101]' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
                 All
@@ -362,15 +341,7 @@
     <div class="flex flex-col items-center justify-center w-1/2 h-1.3 mt-24 gap-12">
         <div class="font-bitter text-4xl text-[#010101] w-full text-justify">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore.
-<div id="contact" class="bg-offwhite h-screen w-full flex flex-row items-center justify-center px-96">
-    <div class="h-1/3 w-1/3 mt-24 bg-[url('/images/sample.svg')] bg-contain bg-no-repeat">
-    </div>
-    <div class="flex flex-col items-center justify-center w-1/2 h-1.3 mt-24 gap-12">
-        <div class="font-bitter text-4xl text-[#010101] w-full text-justify">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore.
         </div>
-        <div class="font-bitter text-2xl text-[#03351A] text-left w-full">
-            — Liu Jiang, <span class="font-bitter-italic">Sunflower Capital</span>
         <div class="font-bitter text-2xl text-[#03351A] text-left w-full">
             — Liu Jiang, <span class="font-bitter-italic">Sunflower Capital</span>
         </div>
@@ -394,21 +365,12 @@
 <style lang="css">
     .snap {
         scroll-snap-align: end; /* Align each section to the start */
-        scroll-snap-align: end; /* Align each section to the start */
     }
 
     .title {
         position: relative;
-        position: relative;
         font-size: 19vw;
         line-height: 67%;
-    }
-
-    .fade-in { animation: fadeIn 1s; }
-
-    @keyframes fadeIn {
-        0% { opacity: 0; }
-        100% { opacity: 1; }
     }
 
     .fade-in { animation: fadeIn 1s; }
@@ -426,16 +388,10 @@
         width: 14vw;
         height: 14vw;
         top: 53vh;
-        width: 14vw;
-        height: 14vw;
-        top: 53vh;
         left: -3vw;
     }
 
     .flower-2 {        
-        width: 7vw;
-        height: 7vw;
-        top: 53vh;
         width: 7vw;
         height: 7vw;
         top: 53vh;
@@ -446,9 +402,6 @@
         width: 8vw;
         height: 8vw;
         top: 56vh;
-        width: 8vw;
-        height: 8vw;
-        top: 56vh;
         left: 29vw;
     }
 
@@ -456,18 +409,11 @@
         position: absolute;   
         width: 15vw;
         height: 15vw;
-    .flower-4 {     
-        position: absolute;   
-        width: 15vw;
-        height: 15vw;
         top: 53.5vh;
-        left: 42.5vw;
         left: 42.5vw;
     }
 
     .flower-5 {       
-        width: 7vw;
-        height: 7vw;
         width: 7vw;
         height: 7vw;
         top: 59.5vh;
@@ -478,15 +424,10 @@
         width: 14vw;
         height: 14vw;
         top: 30vh;
-        width: 14vw;
-        height: 14vw;
-        top: 30vh;
         left: 64vw;
     }
 
     .flower-7 {
-        width: 11vw;
-        height: 11vw;
         width: 11vw;
         height: 11vw;
         top: 32vh;
@@ -496,8 +437,6 @@
     .flower-8 {
         width: 15vw;
         height: 15vw;
-        width: 15vw;
-        height: 15vw;
         top: 14vh;
         right: -9.5vw;
     }
@@ -505,18 +444,11 @@
     .flower-9 {
         width: 8vw;
         height: 8vw;
-        width: 8vw;
-        height: 8vw;
         top: 83vh;
-        left: 1vw;
         left: 1vw;
     }
 
     .flower-10 {
-        width: 16vw;
-        height: 16vw;
-        top: 67vh;
-        left: 13vw;
         width: 16vw;
         height: 16vw;
         top: 67vh;
@@ -528,15 +460,9 @@
         height: 11vw;
         top: 78vh;
         left: 33vw;
-        width: 11vw;
-        height: 11vw;
-        top: 78vh;
-        left: 33vw;
     }
 
     .flower-12 {
-        width: 5.5vw;
-        height: 5.5vw;
         width: 5.5vw;
         height: 5.5vw;
         top: 87.5vh;
@@ -544,9 +470,6 @@
     }
 
     .flower-13 {
-        width: 12vw;
-        height: 12vw;
-        top: 75.5vh;
         width: 12vw;
         height: 12vw;
         top: 75.5vh;
@@ -558,15 +481,9 @@
         height: 14vw;
         top: 56vh;
         left: 74vw;
-        width: 14vw;
-        height: 14vw;
-        top: 56vh;
-        left: 74vw;
     }
 
     .flower-15 {
-        width: 12vw;
-        height: 12vw;
         width: 12vw;
         height: 12vw;
         top: 46vh;
@@ -577,16 +494,10 @@
         width: 6vw;
         height: 6vw;
         top: 87vh;
-        width: 6vw;
-        height: 6vw;
-        top: 87vh;
         left: 75vw;
     }
 
     .flower-17 {
-        width: 13vw;
-        height: 13vw;
-        top: 73vh;
         width: 13vw;
         height: 13vw;
         top: 73vh;
