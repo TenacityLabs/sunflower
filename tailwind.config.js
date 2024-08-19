@@ -42,6 +42,9 @@ export default {
       backgroundImage: {
         'footer': "url('images/footer-bg.png')",
       },
+      transitionDuration: {
+        '2000': '2000ms',
+      }
     },
   },
   plugins: [],
