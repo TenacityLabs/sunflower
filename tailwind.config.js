@@ -17,30 +17,7 @@ export default {
     },
     extend: {
       animation: {
-        'spin': 'spin 1s linear infinite',
-        'wave': 'wave 3s linear infinite',
-      },
-      keyframes: {
-        'reverse-spin': {
-          from: {
-            transform: 'rotate(360deg)'
-          },
-          to: {
-            transform: 'rotate(0deg)'
-          }
-        },
-        'wave': {
-          '0%, 20%, 30%': { transform: 'initial' },
-          '10%': { transform: 'translateY(-15px)' },
-        },
-      },
-      animationDelay: {
-        '0': '0s',
-        '250': '0.25s',
-        '500': '0.5s',
-      },
-      backgroundImage: {
-        'footer': "url('images/footer-bg.png')",
+        'spin': 'spin 3s linear infinite',
       },
       transitionDuration: {
         '2000': '2000ms',

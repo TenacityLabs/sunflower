@@ -1,28 +1,81 @@
 <script lang="ts">
     import { onMount, onDestroy } from 'svelte';
     import Arrow from '$lib/arrow.svelte';
+    import Glide from '@glidejs/glide';
 
-    // let filter = "All"
+    let index = 0;
+    let isAutoplay = true;
+    let mobile = false;
     let scrolled = false;
     let loaded = false;
     let visible = false;
     let handle = true;
-    let expand = false;
     let lastScrollTop = 0;
     let scrollingDown = true;
     let background: HTMLDivElement | null = null;
     let section1: HTMLDivElement | null = null;
     let section2: HTMLDivElement | null = null;
+    let section3: HTMLDivElement | null = null;
+    let section4: HTMLDivElement | null = null;
+    let section5: HTMLDivElement | null = null;
     let centerflower: HTMLDivElement | null = null;
     const scrollFactor = 0.3
 
-    const data = [
+    const quotes = [
+        {
+            text: "Liu is the most energetic investor I've ever met. We raised our seed round during Covid, and Liu was one of the first to commit to investing. She made more intros and was more engaged than anyone else - without her enthusiasm I don't know how we'd have closed the round!",
+            author: "James Hawkins",
+            company: "Posthog"
+        },
+        {
+            text: "Liu has been an incredible partner for Unkey. Whenever we need a sounding board on GTM strategy, Liu is ready to jump in. We see Liu as an extension of our team — she really helps drive our success and growth.",
+            author: "James Perkins",
+            company: "Unkey"
+        },
+        {
+            text: "Liu built a relationship with us while we were still at Uber building Michelangelo. She has the conviction to help colead our seed and Series A, and she was pivotal in helping us hire our early team and close our first few customers.",
+            author: "Kevin Stumpf",
+            company: "Tecton"
+        },
+        {
+            text: "Quality is really what really sets Liu apart from other investors. Working with Liu was unique because she was extremely proactive. She was always trying to find ways to help, not just relying on me to think about what I needed. We had regular discussions on topics ranging from customer negotiations to internal operations to creating a standard around Iceberg.",
+            author: "Ryan Blue",
+            company: "Tabular"
+        },
+        {
+            text: "Liu has been an invaluable investor for Warp, going way beyond just investing money, to investing a bunch of her time helping us with GTM, Growth and Product. She brings deep expertise in the developer space, and we've learned a lot working with her. She is more willing and able than most investors to roll up her sleeves and help the leadership team operate.",
+            author: "Zach Lloyd",
+            company: "Warp"
+        },
+        {
+            text: "Liu led our pre-seed. She is the investor you want on your team early on if you really care about GTM, getting customers, and smartly positioning your product. She will make you think from first principles and ask you the right set of guiding questions, while also opening a lot of doors to folks in the industry and other founders.",
+            author: "Vasek Mlejnsky",
+            company: "E2B"
+        },
+        {
+            text: "Liu strikes the perfect balance of an early stage partner. She was one of the first to back us at the pre-seed, and she’s supported us consistently. She'll trail all your investor updates, ready to provide critical guidance immediately when called upon. Whether it's GTM, product, or just hard founder shit, she's got you.",
+            author: "Jake Cooper",
+            company: "Railway"
+        },
+        {
+            text: "Liu is fantastic to work with. She’s easy to talk to and strategically astute. She happily makes intros to her excellent network, and she’s been a tremendous value add at helping us with customer intros.",
+            author: "Zach Long",
+            company: "ConductorAI"
+        },
+        {
+            text: "Liu is always accessible and genuinely understands the challenges of early-stage companies. She has been crucial in helping us connect with the right customers and clearly define our target audience. Her insights and practical advice have been essential in refining our go-to-market strategy and product direction. Our sessions with her are focused and productive, tackling critical topics with depth.",
+            author: "Aamir Shakir",
+            company: "Mixedbread"
+        }
+    ];
+
+    const companies = [
         { company: 'Accrue Savings', industry: 'Fintech', description: 'Save now, buy later', link: 'https://www.accruesavings.com/' },
         { company: 'AgentSync', industry: 'Fintech', description: 'Automating insurance compliance', link: 'https://agentsync.io/' },
         { company: 'Athelas', industry: 'Healthcare', description: 'Integrated healthcare operations platform', link: 'https://www.athelas.com/' },
         { company: 'Cal', industry: 'Infra', description: 'Open source scheduling infrastructure', link: 'http://cal.com' },
         { company: 'Clay', industry: 'SaaS', description: 'Scaling GTM with data enrichment and personalized outreach', link: 'http://clay.com' },
-        { company: 'Cohere', industry: 'AI/ML', description: 'Providing LLMs and RAG capabilities for enterprises', link: 'https://cohere.com/' },
+        { company: 'Cohere', industry: 'AI/ML', description: 'LLMs and RAG capabilities for enterprises', link: 'https://cohere.com/' },
         { company: 'Comfy', industry: 'AI/ML', description: 'The ComfyUI company', link: 'https://www.comfy.org/' },
         { company: 'ConductorAI', industry: 'Defense and Hardware', description: 'Cohere', link: 'https://conductorai.co/' },
         { company: 'DBT', industry: 'Data', description: 'Transforming data in your warehouse', link: 'https://www.getdbt.com/' },
@@ -36,7 +89,7 @@
         { company: 'Hadrian', industry: 'Defense and Hardware', description: 'Manufacturing the future', link: 'https://www.hadrian.co/' },
         { company: 'Houm', industry: 'Fintech', description: 'Real estate marketplace for Latin America', link: 'https://www.houm.com/' },
         { company: 'Knock', industry: 'Infra', description: 'Flexible, reliable notifications infrastructure', link: 'https://knock.app/' },
-        { company: 'MemGPT', industry: 'AI/ML', description: 'Create LLM agents with long-term memory', link: 'https://memgpt.ai/' },
+        { company: 'MemGPT', industry: 'AI/ML', description: 'Long-term memory for AI agents', link: 'https://memgpt.ai/' },
         { company: 'Modelbit', industry: 'AI/ML', description: 'ML engineering platform for deploying models', link: 'https://www.modelbit.com/' },
         { company: 'Monad', industry: 'Crypto', description: 'Extreme Parallelized Performance for EVM', link: 'https://www.monad.xyz/' },
         { company: 'Nebra', industry: 'Crypto', description: 'Universal Proof Aggregation that Scales ZKP Verification', link: 'https://www.nebra.one/' },
@@ -64,15 +117,16 @@
         { company: 'Vercel', industry: 'Developer', description: 'The frontend cloud for a faster, personalized web', link: 'https://vercel.com/' },
         { company: 'Verkada', industry: 'Defense and Hardware', description: 'Integrated physical security platform', link: 'https://www.verkada.com/' },
         { company: 'Warp', industry: 'Developer', description: 'The modern terminal, reimagined with AI', link: 'https://www.warp.dev/' },
-        { company: 'Xata', industry: 'Infra', description: 'Serverless data platform for PostgreSQL', link: 'https://xata.io/' }
+        { company: 'Xata', industry: 'Infra', description: 'Serverless data platform for PostgreSQL', link: 'https://xata.io/' },
+        { company: 'Mixedbread', industry: 'AI/ML', description: 'End-to-end search pipeline ', link: 'https://www.mixedbread.ai/' }
     ];
 
-    const industries = [...new Set(data.map(item => item.industry))];
+    const industries = [...new Set(companies.map(item => item.industry))];
 
     let filter = { filter: "All" };
 
-    const handler = {
-        set: function(obj: { [x: string]: any; }, prop: string | number, value: string) {
+    const handler: ProxyHandler<{ [key: string]: any }> = {
+        set: function(obj, prop: string | symbol, value: any): boolean {
             document.querySelectorAll('.table-row').forEach(row => {
                 row.classList.add('hidden');
                 row.classList.remove('opacity-0', 'opacity-100');
@@ -80,47 +134,61 @@
                     if (value == row.id || value == "All") {
                         row.classList.remove('hidden');
                         row.classList.add('opacity-0');
-                        (row as HTMLElement).offsetHeight;
+                        (row as HTMLElement).offsetHeight; // Force reflow
                         row.classList.add('opacity-100');
                     }
                 }, 50);
-
             });
-            obj[prop] = value;
+
+            // Assign the new value to the object property
+            obj[prop as keyof typeof obj] = value;
             return true;
         }
     };
 
+
     const proxyData = new Proxy(filter, handler);
-
-    // const getFilteredData = () => {
-    //     if (filter === "All") {
-    //         return data;
-    //     }
-    //     return data.filter(item => item.industry === filter);
-    // };
-
-    // const updateTable = () => {
-    //     const tableBody = document.getElementById('table-body');
-    //     if (tableBody) {
-    //         tableBody.innerHTML = '';
-    //         const filteredData = getFilteredData();
-    //         filteredData.forEach(item => {
-    //             const row = document.createElement('tr');
-    //             row.classList.add('relative', 'py-4', 'h-16', 'custom-border-row');
-    //             row.innerHTML = `
-    //                 <td class="px-2 sm:px-4 font-bitter font-normal text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
-    //                     <a href="${item.link}" target="_blank" class="text-inherit hover:cursor-pointer">${item.company}</a>
-    //                 </td>
-    //                 <td class="px-2 sm:px-4 font-bitter font-light text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">${item.description}</td>
-    //                 ${filter == "All" ? `<td class="px-2 sm:px-4 font-bitter-italic font-light text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">${item.industry}</td>` : ''}`;
-    //             tableBody.appendChild(row);
-    //         });
-    //     }
-    // };
 
     function easeInOutQuad(t: number) {
         return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    }
+
+    function scrollToTop() {
+
+        const start = window.scrollY;
+        const end = 0;
+        const duration = 2000;
+        let startTime: number | null = null;
+
+        handle = false;
+        if (background) {background.style.backgroundColor = 'transparent'};
+        if(section1) {section1.style.backgroundColor = '#03351A'};
+        if(section2) {section2.style.backgroundColor = '#FFF9DE'};
+        document.querySelectorAll('.flower').forEach((element) => {
+            (element as HTMLElement).style.marginTop = "0px";
+        });
+        setTimeout(() => {
+            if (background) {background.style.backgroundColor = '#03351A'};
+            if(section1) {section1.style.backgroundColor = 'transparent'};
+            if(section2) {section2.style.backgroundColor = 'transparent'};
+            handle = true;
+            visible = true;
+        }, 2100);
+
+        function animateScroll(currentTime: number) {
+            if (startTime === null) startTime = currentTime;
+            const timeElapsed = currentTime - startTime;
+            const progress = Math.min(timeElapsed / duration, 1);
+            const ease = easeInOutQuad(progress);
+
+            window.scrollTo(0, start + (end - start) * ease);
+
+            if (timeElapsed < duration) requestAnimationFrame(animateScroll);
+        }
+
+        if (background) {background.style.backgroundColor = '#03351A'};
+
+        requestAnimationFrame(animateScroll);
     }
 
     function scrollToElement(element: HTMLDivElement | null, scrollingDown: boolean) {
@@ -141,7 +209,7 @@
 
             parallax();
 
-            if (background) {
+            if (((element && element.id === 'section2' && scrollingDown) || (element && element.id === 'section1' && !scrollingDown)) && background) {
                 changeBackgroundColorOnScroll(background, progress, scrollingDown);
             }
 
@@ -152,10 +220,16 @@
     }
 
     function handleScroll() {
-        if (!section1 || !section2) return;
+        if (!section1 || !section2 || !section3 || !section4 || !section5) return;
 
         const background1Bottom = section1.getBoundingClientRect().bottom;
         const background2Top = section2.getBoundingClientRect().top;
+        const background2Bottom = section2.getBoundingClientRect().bottom;
+        const background3Top = section3.getBoundingClientRect().top;
+        const background3Bottom = section3.getBoundingClientRect().bottom;
+        const background4Top = section4.getBoundingClientRect().top;
+        const background4Bottom = section4.getBoundingClientRect().bottom;
+        const background5Top = section5.getBoundingClientRect().top;
 
         if (background1Bottom < window.innerHeight && scrollingDown && window.scrollY < window.innerHeight) {
             handle = false;
@@ -164,13 +238,55 @@
             }, 2100);
             visible = false;
             scrollToElement(section2, true);
-        } else if (background2Top > 0 && !scrollingDown) {
+        } else if (background2Top > 0 && background1Bottom > 0 && !scrollingDown) {
             handle = false;
             setTimeout(() => {
                 handle = true;
             }, 2100);
             visible = true;
             scrollToElement(section1, false);
+        } else if (background2Bottom < window.innerHeight && scrollingDown && window.scrollY < 2 * window.innerHeight) {
+            handle = false;
+            setTimeout(() => {
+                handle = true;
+            }, 2100);
+            visible = false;
+            scrollToElement(section3, true);
+        } else if (background3Top > 0 && background2Bottom > 0 && !scrollingDown) {
+            handle = false;
+            setTimeout(() => {
+                handle = true;
+            }, 2100);
+            visible = false;
+            scrollToElement(section2, false);
+        } else if (background3Bottom < window.innerHeight && scrollingDown && window.scrollY < 3 * window.innerHeight) {
+            handle = false;
+            setTimeout(() => {
+                handle = true;
+            }, 2100);
+            visible = false;
+            scrollToElement(section4, true);
+        } else if (background4Top > 0 && background3Bottom > 0 && !scrollingDown) {
+            handle = false;
+            setTimeout(() => {
+                handle = true;
+            }, 2100);
+            visible = false;
+            scrollToElement(section3, false);
+        } else if (background4Bottom < window.innerHeight && scrollingDown && window.scrollY < 4 * window.innerHeight) {
+            handle = false;
+            setTimeout(() => {
+                handle = true;
+            }, 2100);
+            visible = false;
+            scrollToElement(section5, true);
+        } else if (background5Top > 0 && background4Bottom > 0 && !scrollingDown) {
+            handle = false;
+            setTimeout(() => {
+                handle = true;
+            }, 2100);
+            visible = false;
+            scrollToElement(section4, false);
         }
     }
 
@@ -222,10 +338,6 @@
 
     function onScroll(handle: boolean) {
 
-        // console.log(window.scrollY);
-        // console.log(document.documentElement.scrollTop)
-        // console.log(document.documentElement.offsetHeight)
-
         if (window.scrollY > 0) {
             scrolled = true;
         } else {
@@ -235,14 +347,11 @@
         let currentScrollTop = document.documentElement.scrollTop;
 
         if (currentScrollTop > lastScrollTop) {
-            // console.log('down');
             scrollingDown = true;
         } else if (currentScrollTop < lastScrollTop) {
-            // console.log('up');
             scrollingDown = false;
         }
 
-        // Store the current scroll position and direction in local storage
         localStorage.setItem('lastScrollTop', `${currentScrollTop}`);
         localStorage.setItem('scrollingDown', `${scrollingDown}`);
 
@@ -252,116 +361,211 @@
     }
 
     function expandFlower() {
-        const flower = document.getElementById('center-flower');
+        if (!visible) return;
         const message = document.getElementById('full-screen-message');
-        if (!flower || !message) return;
+        if (!centerflower || !message) return;
 
-        expand = true;
-        flower.classList.add('expand');
-
-        // Wait for the expansion to finish before showing the message
+        centerflower.style.transform = 'scale(16)';
         setTimeout(() => {
             message.classList.add('opacity-100');
-        }, 2000); // Match this with the transition duration
+        }, 1000); 
 
-        // After 2 more seconds, hide the message and flower
         setTimeout(() => {
-            flower.classList.remove('expand');
+            if (centerflower) {centerflower.style.transform = 'scale(1)'};
             message.classList.remove('opacity-100');
+        }, 2000);
+    }
 
-            // Optionally reset flower visibility if needed
-        }, 4000); // 2 seconds for the expansion + 2 seconds to display the message
+    function isMobileDevice(userAgent: string): boolean {
+        const mobileRegex = new RegExp(
+            "(android|bb\\d+|meego).+mobile|avantgo|bada\\/|blackberry|blazer|compal|elaine|fennec|hiptop|" +
+            "iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|" +
+            "palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|" +
+            "vodafone|wap|windows ce|xda|xiino|blackberry|mobile|kindle|silk|ipad|playbook|silk|phone|opera mini",
+            "i"
+        );
+
+        const desktopRegex = new RegExp(
+            "(tablet|ipad|playbook|silk)|(android(?!.*mobile))",
+            "i"
+        );
+
+        // Test user agent against mobile regex, and ensure it's not falsely flagged as mobile.
+        return mobileRegex.test(userAgent) && !desktopRegex.test(userAgent);
     }
 
     onMount(() => {
 
-        // console.log(window.innerHeight, window.innerWidth)
-
         loaded = true;
+        mobile = isMobileDevice(navigator.userAgent || navigator.vendor || (window as any).opera);
 
-        // updateTable();
-
-        let lastScrollTop = parseInt(localStorage.getItem('lastScrollTop') || '0', 10);
-
-        // Scroll to the last known position
+        lastScrollTop = parseInt(localStorage.getItem('lastScrollTop') || '0', 10);
         window.scrollTo(0, lastScrollTop);
 
-        // Calculate initial progress based on the scroll position
-        const initialProgress = Math.min(lastScrollTop / window.innerHeight, 1);
+        if (!mobile) {
 
-        // Set the background color based on the initial progress (ignoring scroll direction)
-        if (background) {
-            changeBackgroundColorOnScroll(background, initialProgress, true); // Assuming scrolling down for consistent color change
+            const initialProgress = Math.min(lastScrollTop / window.innerHeight, 1);
+            if (background) {
+                changeBackgroundColorOnScroll(background, initialProgress, true);
+            }
+
+            if (window.scrollY > 0) {
+                    visible = false;
+                } else {
+                    visible = true;
+            }
+
+            (document.body).addEventListener('touchmove', function () {
+                onScroll(handle);
+            }); 
+            window.addEventListener('scroll', function() {
+                onScroll(handle);
+            });
+        } else {
+            visible = true;
+            handle = false;
         }
 
+        // Table filter handler
         document.querySelectorAll('.filter').forEach(button => {
             button.addEventListener('click', function() {
                 proxyData.filter = button.id;
-                // filter = button.id;
             });
         });
 
-        if (window.scrollY > 0) {
-                visible = false;
-            } else {
-                visible = true;
+        // Quotes handler
+        let autoplayInterval: number | null;
+        const glide = new Glide('.glide', {
+            type: 'carousel',
+            startAt: 0,
+            perView: 1,
+            autoplay: 3000,
+        }).mount();
+
+        const pause = document.getElementById('pauseButton');
+        const slideCounter = document.getElementById('slideCounter');
+        const totalSlides = quotes.length;
+
+        function updateSlideCounter() {
+            const currentIndex = glide.index + 1; // Glide index is 0-based, so add 1 for display
+            if (!slideCounter) return;
+            slideCounter.textContent = `${currentIndex} / ${totalSlides}`;
         }
 
-        (document.body).addEventListener('touchmove', function () {
-            onScroll(handle);
-        }); 
-        window.addEventListener('scroll', function() {
-            onScroll(handle);
-        });
-    });
+        updateSlideCounter();
 
+        glide.on('run', function() {
+            updateSlideCounter();
+        });
+
+        function togglePause() {
+            if (isAutoplay) {
+                glide.pause();
+            } else {
+                glide.play();
+            }
+            isAutoplay = !isAutoplay;
+        }
+
+        if (pause) {
+            pause.addEventListener('click', function() {
+                togglePause();
+            });
+        }
+
+        const leftArrow = document.getElementById('leftArrow');
+        const rightArrow = document.getElementById('rightArrow');
+
+        if (leftArrow) {
+            leftArrow.addEventListener('click', function() {
+                if (isAutoplay) {
+                    isAutoplay = false;
+                    glide.pause();
+                }
+                glide.go('<'); 
+            });
+        }
+
+        if (rightArrow) {
+            rightArrow.addEventListener('click', function() {
+                if (isAutoplay) {
+                    isAutoplay = false;
+                    glide.pause();
+                }
+            });
+        }
+    });
 </script>
 
-<div id="background" bind:this={background} class="w-full h-[200vh] relative bg-[#03351A] overflow-x-hidden">
+<div id="background" bind:this={background} 
+class="w-full h-[200vh] relative overflow-x-hidden
+{mobile ? 'bg-transparent' : ''} 
+{loaded ? '' : 'bg-transparent'}"
+>
     <div 
-        id="center-flower" 
-        bind:this={centerflower} 
-        class="z-10 flower-4 bg-[url('/images/flower-4.svg')] bg-contain bg-no-repeat 
-        transition-opacity delay-100 duration-2000 object-center
-        {visible ? 'opacity-100' : 'opacity-0'}"
-        ></div>
-    
-    <div id="full-screen-message" class="fixed inset-0 flex items-center justify-center bg-yellow-500 text-white text-4xl sm:text-6xl font-bold opacity-0 transition-opacity duration-500">
+    id="center-flower" 
+    bind:this={centerflower} 
+    on:click={expandFlower} 
+    on:keypress={expandFlower}
+    role="button"
+    tabindex="0"
+    class="z-10 flower flower-4 bg-[url('/images/flower-4.svg')]  
+    transition-opacity delay-100 duration-2000 object-center
+    {visible ? 'opacity-100' : 'opacity-0'}"
+    ></div>
+   
+    <div id="full-screen-message" 
+    class="fixed inset-0 flex items-center justify-center bg-[#FFDF22]
+    font-arya text-black font-bold 
+    text-4xl sm:text-5xl md:text-6xl lg:text-7xl 
+    opacity-0 transition-opacity duration-1000"
+    >
         GROW WITH SUNFLOWER CAPITAL
     </div>  
-    <div bind:this={section1} class="w-full h-screen relative overflow-hidden">
+    
+
+    <div id="section1" bind:this={section1} 
+    class="w-full h-screen relative overflow-hidden
+    {mobile ? 'bg-[#03351A]' : ''} 
+    {loaded ? '' : 'bg-[#03351A]'}"
+    >
         <div class="title font-arya font-bold transition-all duration-1000 {scrolled ? 'text-offwhite/0' : 'text-offwhite'} {loaded ? 'top-0' : '-top-full'}">SUNFLOWER CAPITAL</div>
-        <div class="flower flower-1 bg-[url('/images/flower-1.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-2 bg-[url('/images/flower-2.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-3 bg-[url('/images/flower-3.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-5 bg-[url('/images/flower-5.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-6 bg-[url('/images/flower-6.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-7 bg-[url('/images/flower-7.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-8 bg-[url('/images/flower-8.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-9 bg-[url('/images/flower-9.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-10 bg-[url('/images/flower-10.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-11 bg-[url('/images/flower-11.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-12 bg-[url('/images/flower-12.svg')] bg-contain bg-no-repeat hover:animate-spin"></div>
-        <div class="flower flower-13 bg-[url('/images/flower-13.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-14 bg-[url('/images/flower-14.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-15 bg-[url('/images/flower-15.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-16 bg-[url('/images/flower-16.svg')] bg-contain bg-no-repeat"></div>
-        <div class="flower flower-17 bg-[url('/images/flower-17.svg')] bg-contain bg-no-repeat"></div>
+        <div class="flower flower-1 bg-[url('/images/flower-1.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-2 bg-[url('/images/flower-2.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-3 bg-[url('/images/flower-3.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-5 bg-[url('/images/flower-5.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-6 bg-[url('/images/flower-6.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-7 bg-[url('/images/flower-7.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-8 bg-[url('/images/flower-8.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-9 bg-[url('/images/flower-9.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-10 bg-[url('/images/flower-10.svg')] {loaded ? '' : 'opacity-0'}"></div>
+        <div class="flower flower-11 bg-[url('/images/flower-11.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-12 bg-[url('/images/flower-12.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-13 bg-[url('/images/flower-13.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-14 bg-[url('/images/flower-14.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-15 bg-[url('/images/flower-15.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-16 bg-[url('/images/flower-16.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-17 bg-[url('/images/flower-17.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
     </div>
     
-    <div bind:this={section2} class="h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24">
+    <div id="section2" bind:this={section2} 
+    class="h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-6 lg:gap-12 xl:gap-20
+    {mobile ? 'bg-offwhite' : 'bg-transparent'}
+    {loaded ? '' : 'bg-offwhite'}"
+    >
         <img
             src="/images/sunflower-logo.svg"
             alt="Sunflower"
             class="h-24 sm:h-28 w-auto"
         />
-        <div class="pt-12 sm:pt-20 w-full sm:w-4/5 font-bitter text-[6vw] sm:text-[4vw] lg:text-[2.5vw] text-[#010101] leading-tight sm:leading-[5rem] lg:leading-[7.5rem] pb-12 sm:pb-24 text-center">
+        <div class="w-full sm:w-4/5 font-bitter text-[6vw] sm:text-[4vw] lg:text-[2.5vw] text-[#010101] leading-tight sm:leading-[5rem] xl:leading-[7.5rem] text-center">
             Sunflower Capital funds early-stage companies building for the modern enterprise.
         </div>
+        <Arrow scrollToId="portfolio" />
     </div>    
 </div>
 
-<div class="bg-offwhite w-full min-h-screen flex justify-center items-center px-4 sm:px-8 lg:px-32">
+<div id="portfolio" bind:this={section3} class="bg-offwhite w-full min-h-screen flex justify-center items-center px-4 sm:px-8 lg:px-32">
     <div class="flex flex-col w-full">
         <div class="flex flex-row justify-between items-center w-full">
             <h1 class="font-arya text-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl">PORTFOLIO COMPANIES</h1>
@@ -372,24 +576,24 @@
                 All
             </button>
             
-            {#each industries as industry}
+            {#each industries.sort() as industry}
                 <button id={industry} class="flex flex-row items-center justify-center font-bitter text-sm sm:text-lg filter">
                     <div class="w-3 h-3 mr-2 sm:mr-3 {proxyData.filter == industry ? 'bg-[#010101]' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
                     {industry}
                 </button>
             {/each}
         </div>
-        <div class="flex flex-col w-full h-[24rem] sm:h-[32rem] overflow-y-auto custom-scrollbar">
+        <div class="flex flex-col w-full h-[24rem] xl:h-[28rem] overflow-y-auto custom-scrollbar">
             <table class="min-w-full border-collapse">
                 <tbody class="font-bitter-italic text-base sm:text-xl md:text-2xl" id="table-body">
-                    {#each data as item}
-                    <tr id={item.industry} class="relative h-12 sm:h-16 py-2 sm:py-4 custom-border-row table-row transition-all duration-500">
+                    {#each companies.sort() as company}
+                    <tr id={company.industry} class="relative h-12 sm:h-16 py-2 sm:py-4 custom-border-row table-row transition-all duration-500">
                         <td class="px-2 sm:px-4 font-bitter font-normal text-sm md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
-                            <a href="{item.link}" target="_blank" class="text-inherit hover:cursor-pointer">{item.company}</a>
+                            <a href="{company.link}" target="_blank" class="text-inherit hover:cursor-pointer">{company.company}</a>
                         </td>
-                        <td class="px-2 sm:px-4 font-bitter font-light text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{item.description}</td>
+                        <td class="px-2 sm:px-4 font-bitter font-light text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{company.description}</td>
                         {#if proxyData.filter == "All"}
-                            <td class="px-2 sm:px-4 font-bitter-italic font-light text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{item.industry}</td>
+                            <td class="px-2 sm:px-4 font-bitter-italic font-light text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{company.industry}</td>
                         {/if}
                     </tr>
                     {/each}
@@ -399,18 +603,74 @@
     </div>
 </div>
 
-<div id="contact" class="bg-offwhite h-screen w-full flex flex-col lg:flex-row items-center justify-center px-8 lg:px-24 xl:px-48">
-    <div class="h-48 w-48 lg:h-1/3 lg:w-1/3 mt-12 lg:mt-24 bg-[url('/images/sample.svg')] bg-contain bg-no-repeat">
+
+
+<div id="quotes" bind:this={section4} class="glide flex flex-col items-center justify-center w-full h-screen bg-offwhite gap-6 xl:gap-12">
+    <div class="w-4/5 flex justify-center items-center gap-3 font-arya text-black text-4xl md:text-5xl lg:text-6xl xl:text-7xl pb-10 transition-opacity duration-1000 {loaded ? '' : 'opacity-0'}">
+        Words from Our Founders
     </div>
-    <div class="flex flex-col items-center justify-center w-full lg:w-1/2 h-auto mt-8 lg:mt-24 gap-6 lg:gap-12">
-        <div class="font-bitter text-2xl sm:text-3xl lg:text-4xl text-[#010101] w-full text-center lg:text-justify">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore.
+
+    <div class="glide__arrows flex gap-3 lg:gap-6 items-center justify-center transition-opacity duration-1000  {loaded ? '' : 'opacity-0'}" data-glide-el="controls">
+        <button id="pauseButton" class="bg-no-repeat bg-contain h-4 w-4 lg:h-8 lg:w-8 {isAutoplay ? "bg-[url('/images/pause.svg')]" : "bg-[url('/images/play.svg')]"}">&nbsp;</button>
+        <button id="leftArrow" class="glide__arrow glide__arrow--left font-semibold text-xl lg:text-3xl font-bitter leading-none" data-glide-dir="<">&#9001;</button>
+        <button id="rightArrow" class="glide__arrow glide__arrow--right font-semibold text-xl lg:text-3xl font-bitter" data-glide-dir=">">&#9002;</button>
+        <div id="slideCounter" class="text-xl lg:text-3xl font-bitter-italic text-[#010101] leading-none"> 1 / 9</div>
+    </div>
+
+    <div class="glide__track w-2/3 lg:w-1/2 transition-opacity duration-1000  {loaded ? '' : 'opacity-0'}" data-glide-el="track">
+        <ul class="glide__slides">
+            {#each quotes as quote}
+            <li class="glide__slide flex flex-col justify-center items-center gap-6 w-1/2">
+                <div class="font-bitter text-base sm:text-xl xl:text-2xl text-[#010101] w-full text-center">
+                    {quote.text}      
+                </div>
+                <div class="font-bitter text-base sm:text-xl md:text-2xl  text-[#03351A] text-center w-full">
+                    — {quote.author}, <span class="font-bitter-italic">{quote.company}</span>
+                </div>
+            </li>
+            {/each}
+        </ul>
+    </div>
+</div>
+
+
+
+<div id="contact" bind:this={section5} class="bg-offwhite h-screen w-full flex flex-col justify-between px-8 lg:px-24 xl:px-48">
+    <div class="flex-grow flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-10 lg:gap-16 xl:gap-24">
+        <div class="h-48 w-48 lg:h-[17vw] lg:w-[17vw] bg-[url('/images/sample.svg')] bg-contain bg-no-repeat">
         </div>
-        <div class="font-bitter text-xl sm:text-2xl text-[#03351A] text-center lg:text-left w-full">
-            — Liu Jiang, <span class="font-bitter-italic">Sunflower Capital</span>
+        <div class="flex flex-col items-center justify-center w-full lg:w-1/2 h-auto gap-6 lg:gap-12">
+            <div class="font-bitter text-2xl sm:text-3xl xl:text-4xl text-[#010101] w-full text-center lg:text-left">
+                We invest at the earliest stage in companies building foundational picks and shovels infrastructure.
+                <br>
+                <span class="text-base lg:text-lg">
+                    We partner with missionary founders who are indefatigable, decisive, and self-aware. <br>
+                    We believe in forging highly personal, deep-rooted relationships that stand the test of time. <br>
+                    We develop distinct theses on markets and how they will unfold.
+                </span>
+            </div>
+            <div class="font-bitter text-xl sm:text-2xl text-[#03351A] text-center lg:text-left w-full">
+                — Liu Jiang, <span class="font-bitter-italic">Sunflower Capital</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-center items-center w-full h-20 sm:h-24 bg-offwhite px-4 sm:px-8" id="footer">
+        <div
+            on:click={scrollToTop} 
+            on:keypress={scrollToTop}
+            role="button"
+            tabindex="0"
+            class="text-center cursor-pointer"
+        >
+            <h1 class="font-bitter text-darkish-brown text-sm sm:text-base lg:text-lg xl:text-xl pl-4 sm:pl-8">
+                ↑ Back to Top © Sunflower Capital 2024
+            </h1>
         </div>
     </div>
 </div>
+
+
 
 <style lang="css">
     .title {
@@ -421,126 +681,53 @@
 
     .flower {
         position: absolute;
+        transition: transform 1000ms ease-in-out, opacity 2000ms ease-in-out;
+        background-size: contain;            
+        background-repeat: no-repeat;                              
     }
 
-    .flower-1 {
-        width: 14vw;
-        height: 14vw;
-        top: 53vh;
-        left: -3vw;
+    .grow:hover {
+        transform: scale(1.2);
     }
 
-    .flower-2 {        
-        width: 7vw;
-        height: 7vw;
-        top: 53vh;
-        left: 16vw;
+    @media (orientation: landscape) {    
+        .flower-1 { width: 14vw; height: 14vw; top: 53vh; left: -3vw; }
+        .flower-2 { width: 7vw; height: 7vw; top: 53vh; left: 16vw; }
+        .flower-3 { width: 8vw; height: 8vw; top: 56vh; left: 29vw; }
+        .flower-4 { width: 15vw; height: 15vw; top: 53.5vh; left: 42.5vw; }
+        .flower-5 { width: 7vw; height: 7vw; top: 59.5vh; left: 62vw; }
+        .flower-6 { width: 14vw; height: 14vw; top: 30vh; left: 64vw; }
+        .flower-7 { width: 11vw; height: 11vw; top: 32vh; left: 82vw; }
+        .flower-8 { width: 15vw; height: 15vw; top: 14vh; right: -9.5vw; }
+        .flower-9 { width: 8vw; height: 8vw; top: 83vh; left: 1vw; }
+        .flower-10 { width: 16vw; height: 16vw; top: 67vh; left: 13vw; }
+        .flower-11 { width: 11vw; height: 11vw; top: 78vh; left: 33vw; }
+        .flower-12 { width: 5.5vw; height: 5.5vw; top: 87.5vh; left: 49.5vw; }
+        .flower-13 { width: 12vw; height: 12vw; top: 75.5vh; left: 58.5vw; }
+        .flower-14 { width: 14vw; height: 14vw; top: 56vh; left: 74vw; }
+        .flower-15 { width: 12vw; height: 12vw; top: 46vh; right: -5vw; }
+        .flower-16 { width: 6vw; height: 6vw; top: 87vh; left: 75vw; }
+        .flower-17 { width: 13vw; height: 13vw; top: 73vh; left: 87.5vw; }
     }
 
-    .flower-3 {
-        width: 8vw;
-        height: 8vw;
-        top: 56vh;
-        left: 29vw;
-    }
-
-    .flower-4 {
-        position: absolute;
-        height: 15vw;
-        width: 15vw;
-        top: 53.5vh;
-        left: 42.5vw;
-    }
-
-    .flower-5 {       
-        width: 7vw;
-        height: 7vw;
-        top: 59.5vh;
-        left: 62vw;
-    }
-
-    .flower-6 {
-        width: 14vw;
-        height: 14vw;
-        top: 30vh;
-        left: 64vw;
-    }
-
-    .flower-7 {
-        width: 11vw;
-        height: 11vw;
-        top: 32vh;
-        left: 82vw;
-    }
-
-    .flower-8 {
-        width: 15vw;
-        height: 15vw;
-        top: 14vh;
-        right: -9.5vw;
-    }
-
-    .flower-9 {
-        width: 8vw;
-        height: 8vw;
-        top: 83vh;
-        left: 1vw;
-    }
-
-    .flower-10 {
-        width: 16vw;
-        height: 16vw;
-        top: 67vh;
-        left: 13vw;
-    }
-
-    .flower-11 {
-        width: 11vw;
-        height: 11vw;
-        top: 78vh;
-        left: 33vw;
-    }
-
-    .flower-12 {
-        width: 5.5vw;
-        height: 5.5vw;
-        top: 87.5vh;
-        left: 49.5vw;
-    }
-
-    .flower-13 {
-        width: 12vw;
-        height: 12vw;
-        top: 75.5vh;
-        left: 58.5vw;
-    }
-
-    .flower-14 {
-        width: 14vw;
-        height: 14vw;
-        top: 56vh;
-        left: 74vw;
-    }
-
-    .flower-15 {
-        width: 12vw;
-        height: 12vw;
-        top: 46vh;
-        right: -5vw;
-    }
-
-    .flower-16 {
-        width: 6vw;
-        height: 6vw;
-        top: 87vh;
-        left: 75vw;
-    }
-
-    .flower-17 {
-        width: 13vw;
-        height: 13vw;
-        top: 73vh;
-        left: 87.5vw;
+    @media (orientation: portrait) {
+        .flower-1 { width: 14vw; height: 14vw; top: 65vh; left: 3vw; }
+        .flower-2 { width: 7vw; height: 7vw; top: 63vh; left: 25vw; }
+        .flower-3 { width: 8vw; height: 8vw; top: 70vh; left: 35vw; }
+        .flower-4 { width: 15vw; height: 15vw; top: 72vh; left: 50vw; }
+        .flower-5 { width: 7vw; height: 7vw; top: 80vh; left: 70vw; }
+        .flower-6 { width: 14vw; height: 14vw; top: 40vh; left: 60vw; }
+        .flower-7 { width: 11vw; height: 11vw; top: 35vh; left: 85vw; }
+        .flower-8 { width: 15vw; height: 15vw; top: 25vh; left: 10vw; }
+        .flower-9 { width: 8vw; height: 8vw; top: 90vh; left: 5vw; }
+        .flower-10 { width: 16vw; height: 16vw; top: 80vh; left: 20vw; }
+        .flower-11 { width: 11vw; height: 11vw; top: 90vh; left: 40vw; }
+        .flower-12 { width: 5.5vw; height: 5.5vw; top: 95vh; left: 50vw; }
+        .flower-13 { width: 12vw; height: 12vw; top: 85vh; left: 65vw; }
+        .flower-14 { width: 14vw; height: 14vw; top: 70vh; left: 80vw; }
+        .flower-15 { width: 12vw; height: 12vw; top: 60vh; right: 10vw; }
+        .flower-16 { width: 6vw; height: 6vw; top: 95vh; left: 75vw; }
+        .flower-17 { width: 13vw; height: 13vw; top: 85vh; left: 90vw; }
     }
 
     #full-screen-message {
