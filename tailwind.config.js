@@ -9,8 +9,9 @@ export default {
     },
     colors: {
       'offwhite': '#FFF9DE',
+      'offblack': '#010101',
       'dark-brown': '#4F3A26',
-      'dark-green': '#5F683C',
+      'dark-green': '#03351A',
       'white': '#FFFFFF',
       'darkish-brown': '#704F38',
       'light-grey': '#B9A89A',

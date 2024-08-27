@@ -168,9 +168,11 @@
             (element as HTMLElement).style.marginTop = "0px";
         });
         setTimeout(() => {
-            if (background) {background.style.backgroundColor = '#03351A'};
-            if(section1) {section1.style.backgroundColor = 'transparent'};
-            if(section2) {section2.style.backgroundColor = 'transparent'};
+            if (!mobile) {
+                if (background) {background.style.backgroundColor = '#03351A'};
+                if(section1) {section1.style.backgroundColor = 'transparent'};
+                if(section2) {section2.style.backgroundColor = 'transparent'};
+            }
             handle = true;
             visible = true;
         }, 2100);
@@ -186,7 +188,7 @@
             if (timeElapsed < duration) requestAnimationFrame(animateScroll);
         }
 
-        if (background) {background.style.backgroundColor = '#03351A'};
+        if (background && !mobile) {background.style.backgroundColor = '#03351A'};
 
         requestAnimationFrame(animateScroll);
     }
@@ -419,9 +421,6 @@
                     visible = true;
             }
 
-            (document.body).addEventListener('touchmove', function () {
-                onScroll(handle);
-            }); 
             window.addEventListener('scroll', function() {
                 onScroll(handle);
             });
@@ -530,8 +529,8 @@ class="w-full h-[200vh] relative overflow-x-hidden
 
     <div id="section1" bind:this={section1} 
     class="w-full h-screen relative overflow-hidden
-    {mobile ? 'bg-[#03351A]' : ''} 
-    {loaded ? '' : 'bg-[#03351A]'}"
+    {mobile ? 'bg-dark-green' : ''} 
+    {loaded ? '' : 'bg-dark-green'}"
     >
         <div class="title font-arya font-bold transition-all duration-1000 {scrolled ? 'text-offwhite/0' : 'text-offwhite'} {loaded ? 'top-0' : '-top-full'}">SUNFLOWER CAPITAL</div>
         <div class="flower flower-1 bg-[url('/images/flower-1.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
@@ -562,8 +561,8 @@ class="w-full h-[200vh] relative overflow-x-hidden
             alt="Sunflower"
             class="h-24 sm:h-28 w-auto"
         />
-        <div class="w-11/12 sm:w-4/5 font-bitter text-[#010101] text-center">
-            <div class="font-bitter text-[#010101] w-full text-center flex flex-col justify-center items-center gap-5 lg:gap-8">
+        <div class="w-11/12 sm:w-4/5 font-bitter text-offblack text-center">
+            <div class="font-bitter text-offblack w-full text-center flex flex-col justify-center items-center gap-5 lg:gap-8">
                 <div class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl leading-tight sm:leading-relaxed xl:leading-loose ">We invest at the earliest stage in companies building foundational picks and shovels infrastructure.<br></div>
                 <div class="text-lg lg:text-xl leading-loose">
                     We partner with missionary founders who are indefatigable, decisive, and self-aware. <br> <br class="hidden sm:inline">
@@ -576,35 +575,35 @@ class="w-full h-[200vh] relative overflow-x-hidden
     </div>    
 </div>
 
-<div id="portfolio" bind:this={section3} class="bg-offwhite w-full min-h-screen flex justify-center items-center px-4 sm:px-8 lg:px-32">
+<div id="portfolio" bind:this={section3} class="bg-offwhite text-offblack w-full min-h-screen flex justify-center items-center px-4 sm:px-8 lg:px-32">
     <div class="flex flex-col w-full">
         <div class="flex flex-row justify-between items-center w-full">
-            <h1 class="font-arya text-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl">PORTFOLIO COMPANIES</h1>
+            <h1 class="font-arya text-black text-6xl sm:text-5xl md:text-6xl lg:text-7xl">PORTFOLIO COMPANIES</h1>
         </div>
-        <div class="flex flex-wrap items-center gap-4 py-4">
-            <button id="All" class="flex flex-row items-center justify-center font-bitter text-sm sm:text-lg filter">
-                <div class="w-3 h-3 mr-2 sm:mr-3 {proxyData.filter == 'All' ? 'bg-[#010101]' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
+        <div class="flex flex-wrap items-center gap-2 sm:gap-4 py-4">
+            <button id="All" class="flex flex-row items-center justify-center font-bitter text-xs sm:text-lg filter">
+                <div class="w-3 h-3 sm:w-2 sm:h-2 mr-2 sm:mr-3 {proxyData.filter == 'All' ? 'bg-offblack' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
                 All
             </button>
             
             {#each industries.sort() as industry}
-                <button id={industry} class="flex flex-row items-center justify-center font-bitter text-sm sm:text-lg filter">
-                    <div class="w-3 h-3 mr-2 sm:mr-3 {proxyData.filter == industry ? 'bg-[#010101]' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
+                <button id={industry} class="flex flex-row items-center justify-center font-bitter text-xs sm:text-lg filter">
+                    <div class="w-3 h-3 sm:w-2 sm:h-2 mr-2 sm:mr-3 {proxyData.filter == industry ? 'bg-offblack' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
                     {industry}
                 </button>
             {/each}
         </div>
         <div class="flex flex-col w-full h-[24rem] xl:h-[28rem] overflow-y-auto custom-scrollbar">
             <table class="min-w-full border-collapse">
-                <tbody class="font-bitter-italic text-base sm:text-xl md:text-2xl" id="table-body">
+                <tbody class="font-bitter-italic text-sm sm:text-xl md:text-2xl" id="table-body">
                     {#each companies.sort() as company}
                     <tr id={company.industry} class="relative h-12 sm:h-16 py-2 sm:py-4 custom-border-row table-row transition-all duration-500">
                         <td class="px-2 sm:px-4 font-bitter font-normal text-sm md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
                             <a href="{company.link}" target="_blank" class="text-inherit hover:cursor-pointer">{company.company}</a>
                         </td>
-                        <td class="px-2 sm:px-4 font-bitter font-light text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{company.description}</td>
+                        <td class="text-dark-green px-2 sm:px-4 font-bitter font-light text-xxs sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{company.description}</td>
                         {#if proxyData.filter == "All"}
-                            <td class="px-2 sm:px-4 font-bitter-italic font-light text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{company.industry}</td>
+                            <td id="my-td" class="text-dark-green px-2 sm:px-4 font-bitter-italic font-light hidden sm:table-cell sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{company.industry}</td>
                         {/if}
                     </tr>
                     {/each}
@@ -616,26 +615,26 @@ class="w-full h-[200vh] relative overflow-x-hidden
 
 
 
-<div id="quotes" bind:this={section4} class="glide flex flex-col items-center justify-center w-full h-screen bg-offwhite gap-6 xl:gap-12">
+<div id="quotes" bind:this={section4} class="glide flex flex-col items-center justify-center w-full h-screen bg-offwhite text-offblack gap-6 xl:gap-12">
     <div class="w-4/5 flex justify-center items-center gap-3 font-arya text-black text-4xl md:text-5xl lg:text-6xl xl:text-7xl pb-10 transition-opacity duration-1000 {loaded ? '' : 'opacity-0'}">
         Words from Our Founders
     </div>
 
     <div class="glide__arrows flex gap-3 lg:gap-6 items-center justify-center transition-opacity duration-1000  {loaded ? '' : 'opacity-0'}" data-glide-el="controls">
-        <button id="pauseButton" class="bg-no-repeat bg-contain h-4 w-4 lg:h-8 lg:w-8 {isAutoplay ? "bg-[url('/images/pause.svg')]" : "bg-[url('/images/play.svg')]"}">&nbsp;</button>
-        <button id="leftArrow" class="glide__arrow glide__arrow--left font-semibold text-xl lg:text-3xl font-bitter leading-none" data-glide-dir="<">&#9001;</button>
-        <button id="rightArrow" class="glide__arrow glide__arrow--right font-semibold text-xl lg:text-3xl font-bitter" data-glide-dir=">">&#9002;</button>
-        <div id="slideCounter" class="text-xl lg:text-3xl font-bitter-italic text-[#010101] leading-none"> 1 / 9</div>
+        <button id="pauseButton" class="bg-no-repeat bg-contain h-8 w-8 {isAutoplay ? 'bg-[url(/images/pause.svg)]' : 'bg-[url(/images/play.svg)]'}">&nbsp;</button>
+        <button id="leftArrow" class="glide__arrow glide__arrow--left font-semibold text-3xl font-bitter leading-none" data-glide-dir="<">&#9001;</button>
+        <button id="rightArrow" class="glide__arrow glide__arrow--right font-semibold text-3xl font-bitter" data-glide-dir=">">&#9002;</button>
+        <div id="slideCounter" class="text-3xl font-bitter-italic leading-none"> 1 / 9</div>
     </div>
 
     <div class="glide__track w-2/3 lg:w-1/2 transition-opacity duration-1000  {loaded ? '' : 'opacity-0'}" data-glide-el="track">
         <ul class="glide__slides">
             {#each quotes as quote}
             <li class="glide__slide flex flex-col justify-center items-center gap-6 w-1/2">
-                <div class="font-bitter text-base sm:text-xl xl:text-2xl text-[#010101] w-full text-center">
+                <div class="font-bitter text-base sm:text-xl xl:text-2xl w-full text-center">
                     {quote.text}      
                 </div>
-                <div class="font-bitter text-base sm:text-xl md:text-2xl  text-[#03351A] text-center w-full">
+                <div class="font-bitter text-base sm:text-xl md:text-2xl  text-dark-green text-center w-full">
                     — {quote.author}, <span class="font-bitter-italic">{quote.company}</span>
                 </div>
             </li>
@@ -651,10 +650,10 @@ class="w-full h-[200vh] relative overflow-x-hidden
         <div class="h-48 w-48 lg:h-[17vw] lg:w-[17vw] bg-[url('/images/sample.svg')] bg-contain bg-no-repeat">
         </div>
         <div class="flex flex-col items-center justify-center w-full lg:w-1/2 h-auto gap-6 lg:gap-12">
-            <div class="font-bitter text-2xl sm:text-3xl xl:text-4xl text-[#010101] w-full text-center lg:text-left">
+            <div class="font-bitter text-2xl sm:text-3xl xl:text-4xl text-offblack w-full text-center lg:text-left">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore.
             </div>
-            <div class="font-bitter text-xl sm:text-2xl text-[#03351A] text-center lg:text-left w-full">
+            <div class="font-bitter text-xl sm:text-2xl text-dark-green text-center lg:text-left w-full">
                 — Liu Jiang, <span class="font-bitter-italic">Sunflower Capital</span>
             </div>
         </div>
