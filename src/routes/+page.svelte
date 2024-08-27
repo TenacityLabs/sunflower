@@ -365,7 +365,12 @@
         const message = document.getElementById('full-screen-message');
         if (!centerflower || !message) return;
 
-        centerflower.style.transform = 'scale(16)';
+        centerflower.style.transition = 'transform 2s ease-in-out';
+        if (window.innerHeight > window.innerWidth) {
+            centerflower.style.transform = 'scale(60)';
+        } else {
+            centerflower.style.transform = 'scale(32)';
+        }
         setTimeout(() => {
             message.classList.add('opacity-100');
         }, 1000); 
@@ -516,7 +521,7 @@ class="w-full h-[200vh] relative overflow-x-hidden
     <div id="full-screen-message" 
     class="fixed inset-0 flex items-center justify-center bg-[#FFDF22]
     font-arya text-black font-bold 
-    text-4xl sm:text-5xl md:text-6xl lg:text-7xl 
+    text-[6vw]
     opacity-0 transition-opacity duration-1000"
     >
         GROW WITH SUNFLOWER CAPITAL
