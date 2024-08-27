@@ -399,10 +399,9 @@
         loaded = true;
         mobile = isMobileDevice(navigator.userAgent || navigator.vendor || (window as any).opera);
 
-        lastScrollTop = parseInt(localStorage.getItem('lastScrollTop') || '0', 10);
-        window.scrollTo(0, lastScrollTop);
-
         if (!mobile) {
+            lastScrollTop = parseInt(localStorage.getItem('lastScrollTop') || '0', 10);
+            window.scrollTo(0, lastScrollTop);
 
             const initialProgress = Math.min(lastScrollTop / window.innerHeight, 1);
             if (background) {
@@ -558,8 +557,15 @@ class="w-full h-[200vh] relative overflow-x-hidden
             alt="Sunflower"
             class="h-24 sm:h-28 w-auto"
         />
-        <div class="w-full sm:w-4/5 font-bitter text-[6vw] sm:text-[4vw] lg:text-[2.5vw] text-[#010101] leading-tight sm:leading-[5rem] xl:leading-[7.5rem] text-center">
-            Sunflower Capital funds early-stage companies building for the modern enterprise.
+        <div class="w-11/12 sm:w-4/5 font-bitter text-[#010101] text-center">
+            <div class="font-bitter text-[#010101] w-full text-center flex flex-col justify-center items-center gap-5 lg:gap-8">
+                <div class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl leading-tight sm:leading-relaxed xl:leading-loose ">We invest at the earliest stage in companies building foundational picks and shovels infrastructure.<br></div>
+                <div class="text-lg lg:text-xl leading-loose">
+                    We partner with missionary founders who are indefatigable, decisive, and self-aware. <br> <br class="hidden sm:inline">
+                    We believe in forging highly personal, deep-rooted relationships that stand the test of time. <br> <br class="hidden sm:inline">
+                    We develop distinct theses on markets and how they will unfold.
+                </div>
+            </div>
         </div>
         <Arrow scrollToId="portfolio" />
     </div>    
@@ -641,13 +647,7 @@ class="w-full h-[200vh] relative overflow-x-hidden
         </div>
         <div class="flex flex-col items-center justify-center w-full lg:w-1/2 h-auto gap-6 lg:gap-12">
             <div class="font-bitter text-2xl sm:text-3xl xl:text-4xl text-[#010101] w-full text-center lg:text-left">
-                We invest at the earliest stage in companies building foundational picks and shovels infrastructure.
-                <br>
-                <span class="text-base lg:text-lg">
-                    We partner with missionary founders who are indefatigable, decisive, and self-aware. <br>
-                    We believe in forging highly personal, deep-rooted relationships that stand the test of time. <br>
-                    We develop distinct theses on markets and how they will unfold.
-                </span>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore.
             </div>
             <div class="font-bitter text-xl sm:text-2xl text-[#03351A] text-center lg:text-left w-full">
                 — Liu Jiang, <span class="font-bitter-italic">Sunflower Capital</span>
