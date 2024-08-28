@@ -1,6 +1,5 @@
 <script lang="ts">
     import { onMount, type ComponentType } from 'svelte';
-    import Flower from '$lib/Flower.svelte';
     import PortfolioTable from '$lib/PortfolioTable.svelte';
     import Testimonials from '$lib/Testimonials.svelte';
     import Arrow from '$lib/Arrow.svelte';
@@ -15,9 +14,7 @@
     let handle = true;
     let lastScrollTop = 0;
     let scrollingDown = true;
-    let marginTop = "0px";
     let centerflower: HTMLElement | null = null;
-    
     const scrollFactor = 0.3;
 
     const quotes = [
@@ -120,7 +117,6 @@
         { company: 'Mixedbread', industry: 'AI/ML', description: 'End-to-end search pipeline ', link: 'https://www.mixedbread.ai/' }
     ];
 
-    const industries = [...new Set(companies.map(item => item.industry))];
     let filter = { filter: "All" };
     const proxyData = new Proxy(filter, {
         set: function(obj, prop: string | symbol, value: any): boolean {
@@ -202,7 +198,6 @@
             const ease = easeInOutQuad(progress);
 
             window.scrollTo(0, start + (end - start) * ease);
-            marginTop = (-(start + (end - start) * ease) * scrollFactor).toString() + "px";
 
             parallax();
 
@@ -276,10 +271,14 @@
         const colorStart = '#03351A'; // Color 1
         const colorEnd = '#FFF9DE'; // Color 2
 
+        // Determine the color based on scroll direction
         const startColor = scrollingDown ? colorStart : colorEnd;
         const endColor = scrollingDown ? colorEnd : colorStart;
 
+        // Calculate the interpolated color based on progress
         const newColor = interpolateColor(startColor, endColor, progress);
+
+        // Apply the new background color to the element
         element.style.backgroundColor = newColor;
     }
 
@@ -483,30 +482,29 @@
     role="button"
     tabindex="0"
     class="z-10 flower flower-4 bg-[url('/images/flower-4.svg')]  
-    transition-opacity delay-100 duration-2000 grow
-    {visible ? 'opacity-100' : 'opacity-0'}"
+    transition-opacity delay-100 duration-2000
+    {visible ? 'opacity-100 grow' : 'opacity-0'}"
     ></div>
     <div id="full-screen-message" class="fixed inset-0 flex items-center justify-center bg-[#FFDF22] font-arya text-offblack font-bold text-[6vw] opacity-0 transition-opacity duration-1000">GROW WITH SUNFLOWER CAPITAL</div>
 
     <div id="hero" bind:this={hero} class="w-full h-screen relative overflow-hidden {mobile ? 'bg-dark-green' : ''} {loaded ? '' : 'bg-dark-green'}">
         <div class="title font-arya font-bold transition-all duration-1000 {scrolled ? 'text-offwhite/0' : 'text-offwhite'} {loaded ? 'top-0' : '-top-full'}">SUNFLOWER CAPITAL</div>
-        <Flower src="/images/flower-1.svg" width="14vw" height="14vw" top="53vh" left="-3vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-2.svg" width="7vw" height="7vw" top="53vh" left="16vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-2.svg" width="7vw" height="7vw" top="53vh" left="16vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-3.svg" width="8vw" height="8vw" top="56vh" left="29vw" loaded={loaded} marginTop={marginTop} extraClasses="hover:animate-spin"/>
-        <Flower src="/images/flower-5.svg" width="7vw" height="7vw" top="59.5vh" left="62vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-6.svg" width="14vw" height="14vw" top="30vh" left="64vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-7.svg" width="11vw" height="11vw" top="32vh" left="82vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-8.svg" width="15vw" height="15vw" top="14vh" right="-9.5vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-9.svg" width="8vw" height="8vw" top="83vh" left="1vw" loaded={loaded} marginTop={marginTop} extraClasses="hover:animate-spin" />
-        <Flower src="/images/flower-10.svg" width="16vw" height="16vw" top="67vh" left="13vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-11.svg" width="11vw" height="11vw" top="78vh" left="33vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-12.svg" width="5.5vw" height="5.5vw" top="87.5vh" left="49.5vw" loaded={loaded} marginTop={marginTop} extraClasses="hover:animate-spin" />
-        <Flower src="/images/flower-13.svg" width="12vw" height="12vw" top="75.5vh" left="58.5vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-14.svg" width="14vw" height="14vw" top="56vh" left="74vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-15.svg" width="12vw" height="12vw" top="46vh" right="-5vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-16.svg" width="6vw" height="6vw" top="87vh" left="75vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
-        <Flower src="/images/flower-17.svg" width="13vw" height="13vw" top="73vh" left="87.5vw" loaded={loaded} marginTop={marginTop} extraClasses="hover:animate-spin" />
+        <div class="flower flower-1 bg-[url('/images/flower-1.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-2 bg-[url('/images/flower-2.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-3 bg-[url('/images/flower-3.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-5 bg-[url('/images/flower-5.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-6 bg-[url('/images/flower-6.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-7 bg-[url('/images/flower-7.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-8 bg-[url('/images/flower-8.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-9 bg-[url('/images/flower-9.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-10 bg-[url('/images/flower-10.svg')] {loaded ? '' : 'opacity-0'}"></div>
+        <div class="flower flower-11 bg-[url('/images/flower-11.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-12 bg-[url('/images/flower-12.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-13 bg-[url('/images/flower-13.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-14 bg-[url('/images/flower-14.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-15 bg-[url('/images/flower-15.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-16 bg-[url('/images/flower-16.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-17 bg-[url('/images/flower-17.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
     </div>
 
     <div id="statement1" bind:this={statement1} class="h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-20 xl:gap-28 {mobile ? 'bg-offwhite' : 'bg-transparent'} {loaded ? '' : 'bg-offwhite'}">
@@ -540,9 +538,7 @@
     <PortfolioTable {companies} {proxyData} />
 </div>
 
-<div id="testimonials" bind:this={testimonials} class="bg-offwhite text-offblack w-full min-h-screen flex justify-center items-center">
-    <Testimonials {quotes} {loaded} {isAutoplay} />
-</div>
+<Testimonials {quotes} {loaded} {isAutoplay} />
 
 <div id="contact" bind:this={contact} class="bg-offwhite h-screen w-full flex flex-col justify-between px-8 lg:px-24 xl:px-48">
     <div class="flex-grow flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-10 lg:gap-16 xl:gap-24">
@@ -597,10 +593,42 @@
     }
 
     @media (orientation: landscape) {    
+        .flower-1 { width: 14vw; height: 14vw; top: 53vh; left: -3vw; }
+        .flower-2 { width: 7vw; height: 7vw; top: 53vh; left: 16vw; }
+        .flower-3 { width: 8vw; height: 8vw; top: 56vh; left: 29vw; }
         .flower-4 { width: 15vw; height: 15vw; top: 53.5vh; left: 42.5vw; }
+        .flower-5 { width: 7vw; height: 7vw; top: 59.5vh; left: 62vw; }
+        .flower-6 { width: 14vw; height: 14vw; top: 30vh; left: 64vw; }
+        .flower-7 { width: 11vw; height: 11vw; top: 32vh; left: 82vw; }
+        .flower-8 { width: 15vw; height: 15vw; top: 14vh; right: -9.5vw; }
+        .flower-9 { width: 8vw; height: 8vw; top: 83vh; left: 1vw; }
+        .flower-10 { width: 16vw; height: 16vw; top: 67vh; left: 13vw; }
+        .flower-11 { width: 11vw; height: 11vw; top: 78vh; left: 33vw; }
+        .flower-12 { width: 5.5vw; height: 5.5vw; top: 87.5vh; left: 49.5vw; }
+        .flower-13 { width: 12vw; height: 12vw; top: 75.5vh; left: 58.5vw; }
+        .flower-14 { width: 14vw; height: 14vw; top: 56vh; left: 74vw; }
+        .flower-15 { width: 12vw; height: 12vw; top: 46vh; right: -5vw; }
+        .flower-16 { width: 6vw; height: 6vw; top: 87vh; left: 75vw; }
+        .flower-17 { width: 13vw; height: 13vw; top: 73vh; left: 87.5vw; }
     }
 
     @media (orientation: portrait) {
+        .flower-1 { width: 14vw; height: 14vw; top: 65vh; left: 3vw; }
+        .flower-2 { width: 7vw; height: 7vw; top: 63vh; left: 25vw; }
+        .flower-3 { width: 8vw; height: 8vw; top: 70vh; left: 35vw; }
         .flower-4 { width: 15vw; height: 15vw; top: 72vh; left: 50vw; }
+        .flower-5 { width: 7vw; height: 7vw; top: 80vh; left: 70vw; }
+        .flower-6 { width: 14vw; height: 14vw; top: 40vh; left: 60vw; }
+        .flower-7 { width: 11vw; height: 11vw; top: 35vh; left: 85vw; }
+        .flower-8 { width: 15vw; height: 15vw; top: 25vh; left: 10vw; }
+        .flower-9 { width: 8vw; height: 8vw; top: 90vh; left: 5vw; }
+        .flower-10 { width: 16vw; height: 16vw; top: 80vh; left: 20vw; }
+        .flower-11 { width: 11vw; height: 11vw; top: 90vh; left: 40vw; }
+        .flower-12 { width: 5.5vw; height: 5.5vw; top: 95vh; left: 50vw; }
+        .flower-13 { width: 12vw; height: 12vw; top: 85vh; left: 65vw; }
+        .flower-14 { width: 14vw; height: 14vw; top: 70vh; left: 80vw; }
+        .flower-15 { width: 12vw; height: 12vw; top: 60vh; right: 10vw; }
+        .flower-16 { width: 6vw; height: 6vw; top: 95vh; left: 75vw; }
+        .flower-17 { width: 13vw; height: 13vw; top: 85vh; left: 90vw; }
     }
 </style>
