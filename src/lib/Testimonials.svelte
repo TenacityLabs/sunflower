@@ -5,7 +5,7 @@
     export let loaded: boolean;
     export let isAutoplay: boolean;
 
-    let glide: Glide;
+    let glide: typeof Glide;
 
     function togglePause() {
         if (isAutoplay) glide.pause();

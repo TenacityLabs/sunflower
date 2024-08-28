@@ -15,7 +15,9 @@
     let handle = true;
     let lastScrollTop = 0;
     let scrollingDown = true;
+    let marginTop = "0px";
     let centerflower: HTMLElement | null = null;
+    
     const scrollFactor = 0.3;
 
     const quotes = [
@@ -200,6 +202,7 @@
             const ease = easeInOutQuad(progress);
 
             window.scrollTo(0, start + (end - start) * ease);
+            marginTop = (-(start + (end - start) * ease) * scrollFactor).toString() + "px";
 
             parallax();
 
@@ -273,14 +276,10 @@
         const colorStart = '#03351A'; // Color 1
         const colorEnd = '#FFF9DE'; // Color 2
 
-        // Determine the color based on scroll direction
         const startColor = scrollingDown ? colorStart : colorEnd;
         const endColor = scrollingDown ? colorEnd : colorStart;
 
-        // Calculate the interpolated color based on progress
         const newColor = interpolateColor(startColor, endColor, progress);
-
-        // Apply the new background color to the element
         element.style.backgroundColor = newColor;
     }
 
@@ -491,22 +490,23 @@
 
     <div id="hero" bind:this={hero} class="w-full h-screen relative overflow-hidden {mobile ? 'bg-dark-green' : ''} {loaded ? '' : 'bg-dark-green'}">
         <div class="title font-arya font-bold transition-all duration-1000 {scrolled ? 'text-offwhite/0' : 'text-offwhite'} {loaded ? 'top-0' : '-top-full'}">SUNFLOWER CAPITAL</div>
-        <Flower src="/images/flower-1.svg" width="14vw" height="14vw" top="53vh" left="-3vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-2.svg" width="7vw" height="7vw" top="53vh" left="16vw" loaded={loaded}  extraClasses="grow" />
-        <Flower src="/images/flower-3.svg" width="8vw" height="8vw" top="56vh" left="29vw" loaded={loaded} extraClasses="hover:animate-spin"/>
-        <Flower src="/images/flower-5.svg" width="7vw" height="7vw" top="59.5vh" left="62vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-6.svg" width="14vw" height="14vw" top="30vh" left="64vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-7.svg" width="11vw" height="11vw" top="32vh" left="82vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-8.svg" width="15vw" height="15vw" top="14vh" right="-9.5vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-9.svg" width="8vw" height="8vw" top="83vh" left="1vw" loaded={loaded} extraClasses="hover:animate-spin" />
-        <Flower src="/images/flower-10.svg" width="16vw" height="16vw" top="67vh" left="13vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-11.svg" width="11vw" height="11vw" top="78vh" left="33vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-12.svg" width="5.5vw" height="5.5vw" top="87.5vh" left="49.5vw" loaded={loaded} extraClasses="hover:animate-spin" />
-        <Flower src="/images/flower-13.svg" width="12vw" height="12vw" top="75.5vh" left="58.5vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-14.svg" width="14vw" height="14vw" top="56vh" left="74vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-15.svg" width="12vw" height="12vw" top="46vh" right="-5vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-16.svg" width="6vw" height="6vw" top="87vh" left="75vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-17.svg" width="13vw" height="13vw" top="73vh" left="87.5vw" loaded={loaded} extraClasses="hover:animate-spin" />
+        <Flower src="/images/flower-1.svg" width="14vw" height="14vw" top="53vh" left="-3vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-2.svg" width="7vw" height="7vw" top="53vh" left="16vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-2.svg" width="7vw" height="7vw" top="53vh" left="16vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-3.svg" width="8vw" height="8vw" top="56vh" left="29vw" loaded={loaded} marginTop={marginTop} extraClasses="hover:animate-spin"/>
+        <Flower src="/images/flower-5.svg" width="7vw" height="7vw" top="59.5vh" left="62vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-6.svg" width="14vw" height="14vw" top="30vh" left="64vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-7.svg" width="11vw" height="11vw" top="32vh" left="82vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-8.svg" width="15vw" height="15vw" top="14vh" right="-9.5vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-9.svg" width="8vw" height="8vw" top="83vh" left="1vw" loaded={loaded} marginTop={marginTop} extraClasses="hover:animate-spin" />
+        <Flower src="/images/flower-10.svg" width="16vw" height="16vw" top="67vh" left="13vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-11.svg" width="11vw" height="11vw" top="78vh" left="33vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-12.svg" width="5.5vw" height="5.5vw" top="87.5vh" left="49.5vw" loaded={loaded} marginTop={marginTop} extraClasses="hover:animate-spin" />
+        <Flower src="/images/flower-13.svg" width="12vw" height="12vw" top="75.5vh" left="58.5vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-14.svg" width="14vw" height="14vw" top="56vh" left="74vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-15.svg" width="12vw" height="12vw" top="46vh" right="-5vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-16.svg" width="6vw" height="6vw" top="87vh" left="75vw" loaded={loaded} marginTop={marginTop} extraClasses="grow" />
+        <Flower src="/images/flower-17.svg" width="13vw" height="13vw" top="73vh" left="87.5vw" loaded={loaded} marginTop={marginTop} extraClasses="hover:animate-spin" />
     </div>
 
     <div id="statement1" bind:this={statement1} class="h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-20 xl:gap-28 {mobile ? 'bg-offwhite' : 'bg-transparent'} {loaded ? '' : 'bg-offwhite'}">
@@ -540,7 +540,9 @@
     <PortfolioTable {companies} {proxyData} />
 </div>
 
-<Testimonials {quotes} {loaded} {isAutoplay} />
+<div id="testimonials" bind:this={testimonials} class="bg-offwhite text-offblack w-full min-h-screen flex justify-center items-center">
+    <Testimonials {quotes} {loaded} {isAutoplay} />
+</div>
 
 <div id="contact" bind:this={contact} class="bg-offwhite h-screen w-full flex flex-col justify-between px-8 lg:px-24 xl:px-48">
     <div class="flex-grow flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-10 lg:gap-16 xl:gap-24">
