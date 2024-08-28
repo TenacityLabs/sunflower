@@ -1,8 +1,5 @@
 <script lang="ts">
-    import { onMount, type ComponentType } from 'svelte';
-    import Flower from '$lib/Flower.svelte';
-    import PortfolioTable from '$lib/PortfolioTable.svelte';
-    import Testimonials from '$lib/Testimonials.svelte';
+    import { onMount, onDestroy } from 'svelte';
     import Arrow from '$lib/Arrow.svelte';
     import Glide from '@glidejs/glide';
 
@@ -15,8 +12,8 @@
     let handle = true;
     let lastScrollTop = 0;
     let scrollingDown = true;
-    let centerflower: HTMLElement | null = null;
-    const scrollFactor = 0.3;
+    let centerflower: HTMLDivElement | null = null;
+    const scrollFactor = 0.3
 
     const quotes = [
         {
@@ -65,7 +62,7 @@
             company: "Mixedbread"
         }
     ];
-    
+
     const companies = [
         { company: 'Accrue Savings', industry: 'Fintech', description: 'Save now, buy later', link: 'https://www.accruesavings.com/' },
         { company: 'AgentSync', industry: 'Fintech', description: 'Automating insurance compliance', link: 'https://agentsync.io/' },
@@ -119,8 +116,10 @@
     ];
 
     const industries = [...new Set(companies.map(item => item.industry))];
+
     let filter = { filter: "All" };
-    const proxyData = new Proxy(filter, {
+
+    const handler: ProxyHandler<{ [key: string]: any }> = {
         set: function(obj, prop: string | symbol, value: any): boolean {
             document.querySelectorAll('.table-row').forEach(row => {
                 row.classList.add('hidden');
@@ -129,17 +128,20 @@
                     if (value == row.id || value == "All") {
                         row.classList.remove('hidden');
                         row.classList.add('opacity-0');
-                        (row as HTMLElement).offsetHeight;
+                        (row as HTMLElement).offsetHeight; // Force reflow
                         row.classList.add('opacity-100');
                     }
                 }, 50);
             });
 
+            // Assign the new value to the object property
             obj[prop as keyof typeof obj] = value;
             return true;
         }
-    });
+    };
 
+
+    const proxyData = new Proxy(filter, handler);
 
     function easeInOutQuad(t: number) {
         return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -330,8 +332,6 @@
     }
 
     function expandFlower() {
-
-        console.log('called!')
         if (!visible) return;
         const message = document.getElementById('full-screen-message');
         if (!centerflower || !message) return;
@@ -413,6 +413,7 @@
         });
 
         // Quotes handler
+        let autoplayInterval: number | null;
         const glide = new Glide('.glide', {
             type: 'carousel',
             startAt: 0,
@@ -425,7 +426,7 @@
         const totalSlides = quotes.length;
 
         function updateSlideCounter() {
-            const currentIndex = glide.index + 1; 
+            const currentIndex = glide.index + 1; // Glide index is 0-based, so add 1 for display
             if (!slideCounter) return;
             slideCounter.textContent = `${currentIndex} / ${totalSlides}`;
         }
@@ -475,7 +476,11 @@
     });
 </script>
 
-<div id="background" bind:this={background} class="w-full h-[200vh] relative overflow-x-hidden {mobile ? 'bg-transparent' : ''} {loaded ? '' : 'bg-transparent'}">
+<div id="background" bind:this={background} 
+class="w-full h-[200vh] relative overflow-x-hidden
+{mobile ? 'bg-transparent' : ''} 
+{loaded ? '' : 'bg-transparent'}"
+>
     <div 
     id="center-flower" 
     bind:this={centerflower} 
@@ -484,33 +489,54 @@
     role="button"
     tabindex="0"
     class="z-10 flower flower-4 bg-[url('/images/flower-4.svg')]  
-    transition-opacity delay-100 duration-2000 grow
+    transition-opacity delay-100 duration-2000 big-grow
     {visible ? 'opacity-100' : 'opacity-0'}"
     ></div>
-    <div id="full-screen-message" class="fixed inset-0 flex items-center justify-center bg-[#FFDF22] font-arya text-offblack font-bold text-[6vw] opacity-0 transition-opacity duration-1000">GROW WITH SUNFLOWER CAPITAL</div>
+   
+    <div id="full-screen-message" 
+    class="fixed inset-0 flex items-center justify-center bg-[#FFDF22]
+    font-arya text-offblack font-bold 
+    text-[6vw]
+    opacity-0 transition-opacity duration-1000"
+    >
+        GROW WITH SUNFLOWER CAPITAL
+    </div>  
+    
 
-    <div id="hero" bind:this={hero} class="w-full h-screen relative overflow-hidden {mobile ? 'bg-dark-green' : ''} {loaded ? '' : 'bg-dark-green'}">
+    <div id="hero" bind:this={hero} 
+    class="w-full h-screen relative overflow-hidden
+    {mobile ? 'bg-dark-green' : ''} 
+    {loaded ? '' : 'bg-dark-green'}"
+    >
         <div class="title font-arya font-bold transition-all duration-1000 {scrolled ? 'text-offwhite/0' : 'text-offwhite'} {loaded ? 'top-0' : '-top-full'}">SUNFLOWER CAPITAL</div>
-        <Flower src="/images/flower-1.svg" width="14vw" height="14vw" top="53vh" left="-3vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-2.svg" width="7vw" height="7vw" top="53vh" left="16vw" loaded={loaded}  extraClasses="grow" />
-        <Flower src="/images/flower-3.svg" width="8vw" height="8vw" top="56vh" left="29vw" loaded={loaded} extraClasses="hover:animate-spin"/>
-        <Flower src="/images/flower-5.svg" width="7vw" height="7vw" top="59.5vh" left="62vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-6.svg" width="14vw" height="14vw" top="30vh" left="64vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-7.svg" width="11vw" height="11vw" top="32vh" left="82vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-8.svg" width="15vw" height="15vw" top="14vh" right="-9.5vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-9.svg" width="8vw" height="8vw" top="83vh" left="1vw" loaded={loaded} extraClasses="hover:animate-spin" />
-        <Flower src="/images/flower-10.svg" width="16vw" height="16vw" top="67vh" left="13vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-11.svg" width="11vw" height="11vw" top="78vh" left="33vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-12.svg" width="5.5vw" height="5.5vw" top="87.5vh" left="49.5vw" loaded={loaded} extraClasses="hover:animate-spin" />
-        <Flower src="/images/flower-13.svg" width="12vw" height="12vw" top="75.5vh" left="58.5vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-14.svg" width="14vw" height="14vw" top="56vh" left="74vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-15.svg" width="12vw" height="12vw" top="46vh" right="-5vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-16.svg" width="6vw" height="6vw" top="87vh" left="75vw" loaded={loaded} extraClasses="grow" />
-        <Flower src="/images/flower-17.svg" width="13vw" height="13vw" top="73vh" left="87.5vw" loaded={loaded} extraClasses="hover:animate-spin" />
+        <div class="flower flower-1 bg-[url('/images/flower-1.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-2 bg-[url('/images/flower-2.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-3 bg-[url('/images/flower-3.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-5 bg-[url('/images/flower-5.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-6 bg-[url('/images/flower-6.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-7 bg-[url('/images/flower-7.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-8 bg-[url('/images/flower-8.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-9 bg-[url('/images/flower-9.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-10 bg-[url('/images/flower-10.svg')] {loaded ? '' : 'opacity-0'}"></div>
+        <div class="flower flower-11 bg-[url('/images/flower-11.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-12 bg-[url('/images/flower-12.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-13 bg-[url('/images/flower-13.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-14 bg-[url('/images/flower-14.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-15 bg-[url('/images/flower-15.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-16 bg-[url('/images/flower-16.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-17 bg-[url('/images/flower-17.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
     </div>
-
-    <div id="statement1" bind:this={statement1} class="h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-20 xl:gap-28 {mobile ? 'bg-offwhite' : 'bg-transparent'} {loaded ? '' : 'bg-offwhite'}">
-        <img src="/images/sunflower-logo.svg" alt="Sunflower" class="h-24 sm:h-28 w-auto" />
+    
+    <div id="statement1" bind:this={statement1} 
+    class="h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-20 xl:gap-28
+    {mobile ? 'bg-offwhite' : 'bg-transparent'}
+    {loaded ? '' : 'bg-offwhite'}"
+    >
+        <img
+            src="/images/sunflower-logo.svg"
+            alt="Sunflower"
+            class="h-24 sm:h-28 w-auto"
+        />
         <div class="w-11/12 sm:w-4/5 font-bitter text-offblack text-center">
             <div class="font-bitter text-offblack w-full text-center flex flex-col justify-center items-center gap-5 lg:gap-8">
                 <div class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl leading-loose sm:leading-loose lg:leading-loose xl:leading-loose">
@@ -522,8 +548,16 @@
     </div>    
 </div>
 
-<div id="statement2" bind:this={statement2} class="h-screen w-full bg-offwhite flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-20 xl:gap-28">
-    <img src="/images/sunflower-logo.svg" alt="Sunflower" class="h-24 sm:h-28 w-auto" />
+<div id="statement2" bind:this={statement2} 
+class="h-screen w-full bg-offwhite 
+flex flex-col items-center justify-center overflow-hidden 
+px-4 sm:px-8 lg:px-24 gap-20 xl:gap-28"
+>
+    <img
+        src="/images/sunflower-logo.svg"
+        alt="Sunflower"
+        class="h-24 sm:h-28 w-auto"
+    />
     <div class="w-11/12 sm:w-4/5 font-bitter text-offblack text-center">
         <div class="font-bitter text-offblack w-full text-center flex flex-col justify-center items-center gap-5 lg:gap-8">
             <div class="text-base sm:text-xl md:text-2xl lg:text-3xl leading-loose text-dark-green">
@@ -537,10 +571,75 @@
 </div> 
 
 <div id="portfolio" bind:this={portfolio} class="bg-offwhite text-offblack w-full min-h-screen flex justify-center items-center px-4 sm:px-8 lg:px-32">
-    <PortfolioTable {companies} {proxyData} />
+    <div class="flex flex-col w-full">
+        <div class="flex flex-row justify-between items-center w-full">
+            <h1 class="font-arya text-offblack text-6xl sm:text-5xl md:text-6xl lg:text-7xl">Our Portfolio</h1>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 sm:gap-4 py-4">
+            <button id="All" class="flex flex-row items-center justify-center font-bitter text-xs sm:text-lg filter">
+                <div class="w-2 h-2 sm:w-3 sm:h-3 mr-2 sm:mr-3  {proxyData.filter == 'All' ? 'bg-offblack' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
+                All
+            </button>
+            {#each industries.sort() as industry}
+                <button id={industry} class="flex flex-row items-center justify-center font-bitter text-xs sm:text-lg filter">
+                    <div class="w-2 h-2 sm:w-3 sm:h-3 mr-2 sm:mr-3 {proxyData.filter == industry ? 'bg-offblack' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
+                    {industry}
+                </button>
+            {/each}
+        </div>
+        <div class="flex flex-col w-full h-[24rem] xl:h-[28rem] overflow-y-auto custom-scrollbar">
+            <table class="min-w-full border-collapse">
+                <tbody class="font-bitter-italic text-sm sm:text-xl md:text-2xl" id="table-body">
+                    {#each companies.sort((a, b) => a.company.localeCompare(b.company)) as company}
+                    <tr id={company.industry} class="relative h-12 sm:h-16 py-2 sm:py-4 custom-border-row table-row transition-all duration-500">
+                        <td class="px-2 sm:px-4 font-bitter font-normal text-sm md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
+                            <a href="{company.link}" target="_blank" class="text-inherit hover:cursor-pointer text-dark-green">{company.company}</a>
+                        </td>
+                        <td class="text-dark-green px-2 sm:px-4 font-bitter font-light text-xxs sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{company.description}</td>
+                        {#if proxyData.filter == "All"}
+                            <td id="my-td" class="text-dark-green px-2 sm:px-4 font-bitter-italic font-light hidden sm:table-cell sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{company.industry}</td>
+                        {/if}
+                    </tr>
+                    {/each}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<Testimonials {quotes} {loaded} {isAutoplay} />
+
+
+<div id="testimonials" bind:this={testimonials} class="glide flex flex-col items-center justify-center w-full h-screen bg-offwhite text-offblack gap-6 xl:gap-12">
+    <div class="w-4/5 flex justify-center items-center gap-3 font-arya text-offblack text-4xl md:text-5xl lg:text-6xl xl:text-7xl pb-10 transition-opacity duration-1000 {loaded ? '' : 'opacity-0'}">
+        Our Founders
+    </div>
+
+    <div class="glide__arrows flex gap-3 lg:gap-6 items-center justify-center transition-opacity duration-1000  {loaded ? '' : 'opacity-0'}" data-glide-el="controls">
+        <button id="pauseButton" class="bg-no-repeat bg-contain h-8 w-8 {isAutoplay ? 'bg-[url(/images/pause.svg)]' : 'bg-[url(/images/play.svg)]'}">&nbsp;</button>
+        <button id="leftArrow" class="glide__arrow glide__arrow--left font-semibold text-3xl font-bitter leading-none" data-glide-dir="<">&#9001;</button>
+        <button id="rightArrow" class="glide__arrow glide__arrow--right font-semibold text-3xl font-bitter" data-glide-dir=">">&#9002;</button>
+        <div id="slideCounter" class="text-3xl font-bitter-italic leading-none"> 1 / 9</div>
+    </div>
+
+    <div class="glide__track w-2/3 lg:w-1/2 transition-opacity duration-1000  {loaded ? '' : 'opacity-0'}" data-glide-el="track">
+        <ul class="glide__slides">
+            {#each quotes as quote}
+            <li class="glide__slide flex flex-col justify-center items-center gap-6 w-1/2">
+                <div class="font-bitter text-base sm:text-xl xl:text-2xl w-full text-center">
+                    {quote.text}      
+                </div>
+                <div class="font-bitter text-base sm:text-xl md:text-2xl  text-dark-green text-center w-full">
+                    — {quote.author}, <span class="font-bitter-italic">{quote.company}</span>
+                </div>
+            </li>
+            {/each}
+        </ul>
+    </div>
+
+    <Arrow scrollToId="contact" />
+</div>
+
+
 
 <div id="contact" bind:this={contact} class="bg-offwhite h-screen w-full flex flex-col justify-between px-8 lg:px-24 xl:px-48">
     <div class="flex-grow flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-10 lg:gap-16 xl:gap-24">
@@ -571,6 +670,8 @@
     </div>
 </div>
 
+
+
 <style lang="css">
     .title {
         position: relative;
@@ -578,27 +679,63 @@
         line-height: 67%;
     }
 
-    #full-screen-message {
-        z-index: 30;
-        pointer-events: none;
-    }
-
     .flower {
         position: absolute;
-        transition: transform 2000ms ease-in-out, opacity 2000ms ease-in-out;
+        transition: transform 1000ms ease-in-out, opacity 2000ms ease-in-out;
         background-size: contain;            
         background-repeat: no-repeat;                              
     }
 
     .grow:hover {
+        transform: scale(1.2);
+    }
+
+    .big-grow:hover {
         transform: scale(1.5);
     }
 
     @media (orientation: landscape) {    
+        .flower-1 { width: 14vw; height: 14vw; top: 53vh; left: -3vw; }
+        .flower-2 { width: 7vw; height: 7vw; top: 53vh; left: 16vw; }
+        .flower-3 { width: 8vw; height: 8vw; top: 56vh; left: 29vw; }
         .flower-4 { width: 15vw; height: 15vw; top: 53.5vh; left: 42.5vw; }
+        .flower-5 { width: 7vw; height: 7vw; top: 59.5vh; left: 62vw; }
+        .flower-6 { width: 14vw; height: 14vw; top: 30vh; left: 64vw; }
+        .flower-7 { width: 11vw; height: 11vw; top: 32vh; left: 82vw; }
+        .flower-8 { width: 15vw; height: 15vw; top: 14vh; right: -9.5vw; }
+        .flower-9 { width: 8vw; height: 8vw; top: 83vh; left: 1vw; }
+        .flower-10 { width: 16vw; height: 16vw; top: 67vh; left: 13vw; }
+        .flower-11 { width: 11vw; height: 11vw; top: 78vh; left: 33vw; }
+        .flower-12 { width: 5.5vw; height: 5.5vw; top: 87.5vh; left: 49.5vw; }
+        .flower-13 { width: 12vw; height: 12vw; top: 75.5vh; left: 58.5vw; }
+        .flower-14 { width: 14vw; height: 14vw; top: 56vh; left: 74vw; }
+        .flower-15 { width: 12vw; height: 12vw; top: 46vh; right: -5vw; }
+        .flower-16 { width: 6vw; height: 6vw; top: 87vh; left: 75vw; }
+        .flower-17 { width: 13vw; height: 13vw; top: 73vh; left: 87.5vw; }
     }
 
     @media (orientation: portrait) {
+        .flower-1 { width: 14vw; height: 14vw; top: 65vh; left: 3vw; }
+        .flower-2 { width: 7vw; height: 7vw; top: 63vh; left: 25vw; }
+        .flower-3 { width: 8vw; height: 8vw; top: 70vh; left: 35vw; }
         .flower-4 { width: 15vw; height: 15vw; top: 72vh; left: 50vw; }
+        .flower-5 { width: 7vw; height: 7vw; top: 80vh; left: 70vw; }
+        .flower-6 { width: 14vw; height: 14vw; top: 40vh; left: 60vw; }
+        .flower-7 { width: 11vw; height: 11vw; top: 35vh; left: 85vw; }
+        .flower-8 { width: 15vw; height: 15vw; top: 25vh; left: 10vw; }
+        .flower-9 { width: 8vw; height: 8vw; top: 90vh; left: 5vw; }
+        .flower-10 { width: 16vw; height: 16vw; top: 80vh; left: 20vw; }
+        .flower-11 { width: 11vw; height: 11vw; top: 90vh; left: 40vw; }
+        .flower-12 { width: 5.5vw; height: 5.5vw; top: 95vh; left: 50vw; }
+        .flower-13 { width: 12vw; height: 12vw; top: 85vh; left: 65vw; }
+        .flower-14 { width: 14vw; height: 14vw; top: 70vh; left: 80vw; }
+        .flower-15 { width: 12vw; height: 12vw; top: 60vh; right: 10vw; }
+        .flower-16 { width: 6vw; height: 6vw; top: 95vh; left: 75vw; }
+        .flower-17 { width: 13vw; height: 13vw; top: 85vh; left: 90vw; }
+    }
+
+    #full-screen-message {
+        z-index: 30;
+        pointer-events: none;
     }
 </style>
