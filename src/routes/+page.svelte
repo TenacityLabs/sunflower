@@ -12,12 +12,6 @@
     let handle = true;
     let lastScrollTop = 0;
     let scrollingDown = true;
-    let background: HTMLDivElement | null = null;
-    let section1: HTMLDivElement | null = null;
-    let section2: HTMLDivElement | null = null;
-    let section3: HTMLDivElement | null = null;
-    let section4: HTMLDivElement | null = null;
-    let section5: HTMLDivElement | null = null;
     let centerflower: HTMLDivElement | null = null;
     const scrollFactor = 0.3
 
@@ -162,16 +156,16 @@
 
         handle = false;
         if (background) {background.style.backgroundColor = 'transparent'};
-        if(section1) {section1.style.backgroundColor = '#03351A'};
-        if(section2) {section2.style.backgroundColor = '#FFF9DE'};
+        if(hero) {hero.style.backgroundColor = '#03351A'};
+        if(statement1) {statement1.style.backgroundColor = '#FFF9DE'};
         document.querySelectorAll('.flower').forEach((element) => {
             (element as HTMLElement).style.marginTop = "0px";
         });
         setTimeout(() => {
             if (!mobile) {
                 if (background) {background.style.backgroundColor = '#03351A'};
-                if(section1) {section1.style.backgroundColor = 'transparent'};
-                if(section2) {section2.style.backgroundColor = 'transparent'};
+                if(hero) {hero.style.backgroundColor = 'transparent'};
+                if(statement1) {statement1.style.backgroundColor = 'transparent'};
             }
             handle = true;
             visible = true;
@@ -211,7 +205,7 @@
 
             parallax();
 
-            if (((element && element.id === 'section2' && scrollingDown) || (element && element.id === 'section1' && !scrollingDown)) && background) {
+            if (((element && element.id === 'statement1' && scrollingDown) || (element && element.id === 'hero' && !scrollingDown)) && background) {
                 changeBackgroundColorOnScroll(background, progress, scrollingDown);
             }
 
@@ -221,76 +215,51 @@
         requestAnimationFrame(animateScroll);
     }
 
+    let background: HTMLDivElement | null = null;
+    let hero: HTMLDivElement | null = null;
+    let statement1: HTMLDivElement | null = null;
+    let statement2: HTMLDivElement | null = null;
+    let portfolio: HTMLDivElement | null = null;
+    let testimonials: HTMLDivElement | null = null;
+    let contact: HTMLDivElement | null = null;
+
+    const sections: HTMLDivElement[] = [];
+
+    function setupSections() {
+        if (hero) sections.push(hero);
+        if (statement1) sections.push(statement1);
+        if (statement2) sections.push(statement2);
+        if (portfolio) sections.push(portfolio);
+        if (testimonials) sections.push(testimonials);
+        if (contact) sections.push(contact);
+    }
+
     function handleScroll() {
-        if (!section1 || !section2 || !section3 || !section4 || !section5) return;
+        if (sections.length === 0) return;
 
-        const background1Bottom = section1.getBoundingClientRect().bottom;
-        const background2Top = section2.getBoundingClientRect().top;
-        const background2Bottom = section2.getBoundingClientRect().bottom;
-        const background3Top = section3.getBoundingClientRect().top;
-        const background3Bottom = section3.getBoundingClientRect().bottom;
-        const background4Top = section4.getBoundingClientRect().top;
-        const background4Bottom = section4.getBoundingClientRect().bottom;
-        const background5Top = section5.getBoundingClientRect().top;
+        let targetIndex: number | null = null;
 
-        if (background1Bottom < window.innerHeight && scrollingDown && window.scrollY < window.innerHeight) {
+        sections.forEach((section, index) => {
+            const sectionTop = section.getBoundingClientRect().top;
+            const sectionBottom = section.getBoundingClientRect().bottom;
+
+            if (sectionBottom < window.innerHeight && scrollingDown && window.scrollY < (index + 1) * window.innerHeight) {
+                targetIndex = index + 1;
+            } else if (sectionTop > 0 && sectionTop < window.innerHeight && !scrollingDown) {
+                targetIndex = index - 1;
+            }
+        });
+
+        if (targetIndex !== null && targetIndex >= 0 && targetIndex < sections.length) {
             handle = false;
             setTimeout(() => {
                 handle = true;
             }, 2100);
-            visible = false;
-            scrollToElement(section2, true);
-        } else if (background2Top > 0 && background1Bottom > 0 && !scrollingDown) {
-            handle = false;
-            setTimeout(() => {
-                handle = true;
-            }, 2100);
-            visible = true;
-            scrollToElement(section1, false);
-        } else if (background2Bottom < window.innerHeight && scrollingDown && window.scrollY < 2 * window.innerHeight) {
-            handle = false;
-            setTimeout(() => {
-                handle = true;
-            }, 2100);
-            visible = false;
-            scrollToElement(section3, true);
-        } else if (background3Top > 0 && background2Bottom > 0 && !scrollingDown) {
-            handle = false;
-            setTimeout(() => {
-                handle = true;
-            }, 2100);
-            visible = false;
-            scrollToElement(section2, false);
-        } else if (background3Bottom < window.innerHeight && scrollingDown && window.scrollY < 3 * window.innerHeight) {
-            handle = false;
-            setTimeout(() => {
-                handle = true;
-            }, 2100);
-            visible = false;
-            scrollToElement(section4, true);
-        } else if (background4Top > 0 && background3Bottom > 0 && !scrollingDown) {
-            handle = false;
-            setTimeout(() => {
-                handle = true;
-            }, 2100);
-            visible = false;
-            scrollToElement(section3, false);
-        } else if (background4Bottom < window.innerHeight && scrollingDown && window.scrollY < 4 * window.innerHeight) {
-            handle = false;
-            setTimeout(() => {
-                handle = true;
-            }, 2100);
-            visible = false;
-            scrollToElement(section5, true);
-        } else if (background5Top > 0 && background4Bottom > 0 && !scrollingDown) {
-            handle = false;
-            setTimeout(() => {
-                handle = true;
-            }, 2100);
-            visible = false;
-            scrollToElement(section4, false);
+            visible = targetIndex === 0;
+            scrollToElement(sections[targetIndex], scrollingDown);
         }
     }
+
 
     function parallax() {
         document.querySelectorAll('.flower').forEach((element) => {
@@ -405,6 +374,7 @@
 
         loaded = true;
         mobile = isMobileDevice(navigator.userAgent || navigator.vendor || (window as any).opera);
+        document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + 'px');
 
         if (!mobile) {
             lastScrollTop = parseInt(localStorage.getItem('lastScrollTop') || '0', 10);
@@ -421,10 +391,16 @@
                     visible = true;
             }
 
+            setupSections();
+
             window.addEventListener('scroll', function() {
                 onScroll(handle);
             });
         } else {
+            window.addEventListener('touchmove', function(e){
+                var distanceY = window.scrollY
+                console.log(distanceY)
+            });
             visible = true;
             handle = false;
         }
@@ -513,13 +489,13 @@ class="w-full h-[200vh] relative overflow-x-hidden
     role="button"
     tabindex="0"
     class="z-10 flower flower-4 bg-[url('/images/flower-4.svg')]  
-    transition-opacity delay-100 duration-2000 object-center
+    transition-opacity delay-100 duration-2000 big-grow
     {visible ? 'opacity-100' : 'opacity-0'}"
     ></div>
    
     <div id="full-screen-message" 
     class="fixed inset-0 flex items-center justify-center bg-[#FFDF22]
-    font-arya text-black font-bold 
+    font-arya text-offblack font-bold 
     text-[6vw]
     opacity-0 transition-opacity duration-1000"
     >
@@ -527,7 +503,7 @@ class="w-full h-[200vh] relative overflow-x-hidden
     </div>  
     
 
-    <div id="section1" bind:this={section1} 
+    <div id="hero" bind:this={hero} 
     class="w-full h-screen relative overflow-hidden
     {mobile ? 'bg-dark-green' : ''} 
     {loaded ? '' : 'bg-dark-green'}"
@@ -551,8 +527,8 @@ class="w-full h-[200vh] relative overflow-x-hidden
         <div class="flower flower-17 bg-[url('/images/flower-17.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
     </div>
     
-    <div id="section2" bind:this={section2} 
-    class="h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-6 lg:gap-12 xl:gap-20
+    <div id="statement1" bind:this={statement1} 
+    class="h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-20 xl:gap-28
     {mobile ? 'bg-offwhite' : 'bg-transparent'}
     {loaded ? '' : 'bg-offwhite'}"
     >
@@ -563,32 +539,50 @@ class="w-full h-[200vh] relative overflow-x-hidden
         />
         <div class="w-11/12 sm:w-4/5 font-bitter text-offblack text-center">
             <div class="font-bitter text-offblack w-full text-center flex flex-col justify-center items-center gap-5 lg:gap-8">
-                <div class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl leading-tight sm:leading-relaxed xl:leading-loose ">We invest at the earliest stage in companies building foundational picks and shovels infrastructure.<br></div>
-                <div class="text-lg lg:text-xl leading-loose">
-                    We partner with missionary founders who are indefatigable, decisive, and self-aware. <br> <br class="hidden sm:inline">
-                    We believe in forging highly personal, deep-rooted relationships that stand the test of time. <br> <br class="hidden sm:inline">
-                    We develop distinct theses on markets and how they will unfold.
+                <div class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl leading-loose sm:leading-loose lg:leading-loose xl:leading-loose">
+                    We invest at the earliest stage in companies building foundational picks and shovels infrastructure.<br>
                 </div>
             </div>
         </div>
-        <Arrow scrollToId="portfolio" />
+        <Arrow scrollToId="statement2" />
     </div>    
 </div>
 
-<div id="portfolio" bind:this={section3} class="bg-offwhite text-offblack w-full min-h-screen flex justify-center items-center px-4 sm:px-8 lg:px-32">
+<div id="statement2" bind:this={statement2} 
+class="h-screen w-full bg-offwhite 
+flex flex-col items-center justify-center overflow-hidden 
+px-4 sm:px-8 lg:px-24 gap-20 xl:gap-28"
+>
+    <img
+        src="/images/sunflower-logo.svg"
+        alt="Sunflower"
+        class="h-24 sm:h-28 w-auto"
+    />
+    <div class="w-11/12 sm:w-4/5 font-bitter text-offblack text-center">
+        <div class="font-bitter text-offblack w-full text-center flex flex-col justify-center items-center gap-5 lg:gap-8">
+            <div class="text-base sm:text-xl md:text-2xl lg:text-3xl leading-loose text-dark-green">
+                We partner with missionary founders who are indefatigable, decisive, and self-aware. <br> <br>
+                We believe in forging highly personal, deep-rooted relationships that stand the test of time. <br> <br>
+                We develop distinct theses on markets and how they will unfold.
+            </div>
+        </div>
+    </div>
+    <Arrow scrollToId="portfolio" />
+</div> 
+
+<div id="portfolio" bind:this={portfolio} class="bg-offwhite text-offblack w-full min-h-screen flex justify-center items-center px-4 sm:px-8 lg:px-32">
     <div class="flex flex-col w-full">
         <div class="flex flex-row justify-between items-center w-full">
-            <h1 class="font-arya text-black text-6xl sm:text-5xl md:text-6xl lg:text-7xl">PORTFOLIO COMPANIES</h1>
+            <h1 class="font-arya text-offblack text-6xl sm:text-5xl md:text-6xl lg:text-7xl">Our Portfolio</h1>
         </div>
         <div class="flex flex-wrap items-center gap-2 sm:gap-4 py-4">
             <button id="All" class="flex flex-row items-center justify-center font-bitter text-xs sm:text-lg filter">
-                <div class="w-3 h-3 sm:w-2 sm:h-2 mr-2 sm:mr-3 {proxyData.filter == 'All' ? 'bg-offblack' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
+                <div class="w-2 h-2 sm:w-3 sm:h-3 mr-2 sm:mr-3  {proxyData.filter == 'All' ? 'bg-offblack' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
                 All
             </button>
-            
             {#each industries.sort() as industry}
                 <button id={industry} class="flex flex-row items-center justify-center font-bitter text-xs sm:text-lg filter">
-                    <div class="w-3 h-3 sm:w-2 sm:h-2 mr-2 sm:mr-3 {proxyData.filter == industry ? 'bg-offblack' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
+                    <div class="w-2 h-2 sm:w-3 sm:h-3 mr-2 sm:mr-3 {proxyData.filter == industry ? 'bg-offblack' : 'bg-[#6D8A54] opacity-20'}">&nbsp;</div>
                     {industry}
                 </button>
             {/each}
@@ -596,10 +590,10 @@ class="w-full h-[200vh] relative overflow-x-hidden
         <div class="flex flex-col w-full h-[24rem] xl:h-[28rem] overflow-y-auto custom-scrollbar">
             <table class="min-w-full border-collapse">
                 <tbody class="font-bitter-italic text-sm sm:text-xl md:text-2xl" id="table-body">
-                    {#each companies.sort() as company}
+                    {#each companies.sort((a, b) => a.company.localeCompare(b.company)) as company}
                     <tr id={company.industry} class="relative h-12 sm:h-16 py-2 sm:py-4 custom-border-row table-row transition-all duration-500">
                         <td class="px-2 sm:px-4 font-bitter font-normal text-sm md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
-                            <a href="{company.link}" target="_blank" class="text-inherit hover:cursor-pointer">{company.company}</a>
+                            <a href="{company.link}" target="_blank" class="text-inherit hover:cursor-pointer text-dark-green">{company.company}</a>
                         </td>
                         <td class="text-dark-green px-2 sm:px-4 font-bitter font-light text-xxs sm:text-sm md:text-md lg:text-lg xl:text-xl 2xl:text-2xl">{company.description}</td>
                         {#if proxyData.filter == "All"}
@@ -615,9 +609,9 @@ class="w-full h-[200vh] relative overflow-x-hidden
 
 
 
-<div id="quotes" bind:this={section4} class="glide flex flex-col items-center justify-center w-full h-screen bg-offwhite text-offblack gap-6 xl:gap-12">
-    <div class="w-4/5 flex justify-center items-center gap-3 font-arya text-black text-4xl md:text-5xl lg:text-6xl xl:text-7xl pb-10 transition-opacity duration-1000 {loaded ? '' : 'opacity-0'}">
-        Words from Our Founders
+<div id="testimonials" bind:this={testimonials} class="glide flex flex-col items-center justify-center w-full h-screen bg-offwhite text-offblack gap-6 xl:gap-12">
+    <div class="w-4/5 flex justify-center items-center gap-3 font-arya text-offblack text-4xl md:text-5xl lg:text-6xl xl:text-7xl pb-10 transition-opacity duration-1000 {loaded ? '' : 'opacity-0'}">
+        Our Founders
     </div>
 
     <div class="glide__arrows flex gap-3 lg:gap-6 items-center justify-center transition-opacity duration-1000  {loaded ? '' : 'opacity-0'}" data-glide-el="controls">
@@ -641,11 +635,13 @@ class="w-full h-[200vh] relative overflow-x-hidden
             {/each}
         </ul>
     </div>
+
+    <Arrow scrollToId="contact" />
 </div>
 
 
 
-<div id="contact" bind:this={section5} class="bg-offwhite h-screen w-full flex flex-col justify-between px-8 lg:px-24 xl:px-48">
+<div id="contact" bind:this={contact} class="bg-offwhite h-screen w-full flex flex-col justify-between px-8 lg:px-24 xl:px-48">
     <div class="flex-grow flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-10 lg:gap-16 xl:gap-24">
         <div class="h-48 w-48 lg:h-[17vw] lg:w-[17vw] bg-[url('/images/sample.svg')] bg-contain bg-no-repeat">
         </div>
@@ -692,6 +688,10 @@ class="w-full h-[200vh] relative overflow-x-hidden
 
     .grow:hover {
         transform: scale(1.2);
+    }
+
+    .big-grow:hover {
+        transform: scale(1.5);
     }
 
     @media (orientation: landscape) {    
