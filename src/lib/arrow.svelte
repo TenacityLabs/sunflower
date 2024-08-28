@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
     export let scrollToId = '';
 
-    function easeInOutQuad(t) {
+    function easeInOutQuad(t: number) {
         return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
     }
 
@@ -15,12 +15,12 @@
         /**
 		 * @type {number | null}
 		 */
-        let startTime = null;
+        let startTime: number | null = null;
 
         /**
 		 * @param {number | null} currentTime
 		 */
-        function animateScroll(currentTime) {
+        function animateScroll(currentTime: number) {
             if (startTime === null) startTime = currentTime;
             // @ts-ignore
             const timeElapsed = currentTime - startTime;
