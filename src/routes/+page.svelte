@@ -538,7 +538,9 @@
     <PortfolioTable {companies} {proxyData} />
 </div>
 
-<Testimonials {quotes} {loaded} {isAutoplay} />
+<div id="testimonials" bind:this={testimonials} class="bg-offwhite text-offblack w-full min-h-screen flex justify-center items-center">
+    <Testimonials {quotes} {loaded} {isAutoplay} />
+</div>
 
 <div id="contact" bind:this={contact} class="bg-offwhite h-screen w-full flex flex-col justify-between px-8 lg:px-24 xl:px-48">
     <div class="flex-grow flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-10 lg:gap-16 xl:gap-24">

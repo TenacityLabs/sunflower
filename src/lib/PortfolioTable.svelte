@@ -6,7 +6,7 @@
     const sortedCompanies = companies.sort((a, b) => a.company.localeCompare(b.company));
 </script>
 
-<div class="w-full h-sceen flex flex-col justify-center items-center gap-3 sm:gap-6 lg:gap-12">
+<div class="w-full h-sceen flex flex-col justify-center items-center gap-3">
     <div class="flex flex-row justify-between items-center w-full">
         <h1 class="font-arya text-offblack text-6xl sm:text-5xl md:text-6xl lg:text-7xl">Our Portfolio</h1>
     </div>
