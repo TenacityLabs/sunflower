@@ -2,11 +2,9 @@
     import { onMount, type ComponentType } from 'svelte';
     import PortfolioTable from '$lib/PortfolioTable.svelte';
     import Testimonials from '$lib/Testimonials.svelte';
-    import Arrow from '$lib/Arrow.svelte';
     import Glide from '@glidejs/glide';
 
     let index = 0;
-    let isAutoplay = true;
     let mobile = false;
     let scrolled = false;
     let loaded = false;
@@ -18,51 +16,101 @@
     const scrollFactor = 0.3;
 
     const quotes = [
-        {
-            text: "Liu is the most energetic investor I've ever met. We raised our seed round during Covid, and Liu was one of the first to commit to investing. She made more intros and was more engaged than anyone else - without her enthusiasm I don't know how we'd have closed the round!",
-            author: "James Hawkins",
-            company: "Posthog"
-        },
-        {
-            text: "Liu has been an incredible partner for Unkey. Whenever we need a sounding board on GTM strategy, Liu is ready to jump in. We see Liu as an extension of our team — she really helps drive our success and growth.",
-            author: "James Perkins",
-            company: "Unkey"
-        },
-        {
-            text: "Liu built a relationship with us while we were still at Uber building Michelangelo. She has the conviction to help colead our seed and Series A, and she was pivotal in helping us hire our early team and close our first few customers.",
-            author: "Kevin Stumpf",
-            company: "Tecton"
-        },
-        {
-            text: "Quality is really what really sets Liu apart from other investors. Working with Liu was unique because she was extremely proactive. She was always trying to find ways to help, not just relying on me to think about what I needed. We had regular discussions on topics ranging from customer negotiations to internal operations to creating a standard around Iceberg.",
-            author: "Ryan Blue",
-            company: "Tabular"
-        },
-        {
-            text: "Liu has been an invaluable investor for Warp, going way beyond just investing money, to investing a bunch of her time helping us with GTM, Growth and Product. She brings deep expertise in the developer space, and we've learned a lot working with her. She is more willing and able than most investors to roll up her sleeves and help the leadership team operate.",
-            author: "Zach Lloyd",
-            company: "Warp"
-        },
-        {
-            text: "Liu led our pre-seed. She is the investor you want on your team early on if you really care about GTM, getting customers, and smartly positioning your product. She will make you think from first principles and ask you the right set of guiding questions, while also opening a lot of doors to folks in the industry and other founders.",
-            author: "Vasek Mlejnsky",
-            company: "E2B"
-        },
-        {
-            text: "Liu strikes the perfect balance of an early stage partner. She was one of the first to back us at the pre-seed, and she’s supported us consistently. She'll trail all your investor updates, ready to provide critical guidance immediately when called upon. Whether it's GTM, product, or just hard founder shit, she's got you.",
-            author: "Jake Cooper",
-            company: "Railway"
-        },
-        {
-            text: "Liu is fantastic to work with. She’s easy to talk to and strategically astute. She happily makes intros to her excellent network, and she’s been a tremendous value add at helping us with customer intros.",
-            author: "Zach Long",
-            company: "ConductorAI"
-        },
-        {
-            text: "Liu is always accessible and genuinely understands the challenges of early-stage companies. She has been crucial in helping us connect with the right customers and clearly define our target audience. Her insights and practical advice have been essential in refining our go-to-market strategy and product direction. Our sessions with her are focused and productive, tackling critical topics with depth.",
-            author: "Aamir Shakir",
-            company: "Mixedbread"
-        }
+    {
+        quote: "Quality is really what really sets Liu apart from other investors. Working with Liu was unique because she was extremely proactive. She was always trying to find ways to help, not just relying on me to think about what I needed. We had regular discussions on topics ranging from customer negotiations to internal operations to creating a standard around Iceberg.",
+        author: "Ryan Blue",
+        company: "Tabular"
+    },
+    {
+        quote: "Liu invested in our seed and then doubled down in subsequent rounds. She helped us with positioning and messaging on our website and customer materials, refining our key product use cases, and thinking through developer ubiquity.",
+        author: "Maxim Fateev",
+        company: "Temporal"
+    },
+    {
+        quote: "Liu had early conviction in Verkada. Her ability to quickly immerse herself in new markets is a real differentiator amongst early stage investors. I was very impressed by her deep knowledge of our industry, which led to insightful and strategic questions coupled with tailored advice and direction.",
+        author: "Raj Misra",
+        company: "Verkada"
+    },
+    {
+        quote: "Liu is the best kind of investor: she is technical, understands product, and can quickly understand the big picture. She's really well connected with top talent and investors. She'll help when she's needed and give you space to operate otherwise. Highly recommend working with her.",
+        author: "Kareem Amin",
+        company: "Clay"
+    },
+    {
+        quote: "Liu was one of the first investors and believers in Hadrian. She helped us settle into Los Angeles, and guided us through Hadrian’s rapid growth, expansion, and fundraising journey.",
+        author: "Chris Power",
+        company: "Hadrian"
+    },
+    {
+        quote: "Liu has been an invaluable investor for Warp, going way beyond just investing money, to investing a bunch of her time helping us with GTM, Growth and Product. She brings deep expertise in the developer space, and we've learned a lot working with her. She is more willing and able than most investors to roll up her sleeves and help the leadership team operate.",
+        author: "Zach Lloyd",
+        company: "Warp"
+    },
+    {
+        quote: "Liu is the most energetic investor I've ever met. We raised our seed round during Covid, and Liu was one of the first to commit to investing. She made more intros and was more engaged than anyone else - without her enthusiasm I don't know how we'd have closed the round!",
+        author: "James Hawkins",
+        company: "Posthog"
+    },
+    {
+        quote: "Liu built a relationship with us while we were still at Uber building Michelangelo. She had the conviction to colead our seed and Series A, and she was pivotal in helping us hire our early team and close our first few marquee customers.",
+        author: "Kevin Stumpf",
+        company: "Tecton"
+    },
+    {
+        quote: "Liu strikes the perfect balance of an early stage partner. She was one of the first to back us at the pre-seed, and she’s supported us consistently. She'll trail all your investor updates, ready to provide critical guidance immediately when called upon. Whether it's GTM, product, or just hard founder shit, she's got you.",
+        author: "Jake Cooper",
+        company: "Railway"
+    },
+    {
+        quote: "Even before leading our pre-seed, Liu impressed us with her spot-on perspectives on strategy. From the onset, it was clear she took the time to thoroughly understand our business on a deeper level. We’ve gotten a lot of value from her advice on scalable GTM plans and ensuring we are focusing our efforts on the right ICP and partners.",
+        author: "Olivia Joslin",
+        company: "Tollbit"
+    },
+    {
+        quote: "Liu was one of the first investors we started working with at Knock. Not only was she an instrumental part of our early fundraising, she also helped introduce us to many potential customers. Even now, several years after her initial investment in Knock, Liu continues to respond to our investor updates, offering ways to help. I'm grateful she's been a part of our journey.",
+        author: "Sam Seely",
+        company: "Knock"
+    },
+    {
+        quote: "Liu was the investor I spoke to most frequently. As a solo founder, I appreciated her being a sounding board. She joined customer calls, helped us figure out pricing and business model, and introduced us to and interviewed potential hires.",
+        author: "Alana Marzoev",
+        company: "ReadySet"
+    },
+    {
+        quote: "Liu led our pre-seed. She is the investor you want on your team early on if you really care about GTM, getting customers, and smartly positioning your product. She will make you think from first principles and ask you the right set of guiding questions, while also opening a lot of doors to folks in the industry and other founders.",
+        author: "Vasek Mlejnsky",
+        company: "E2B"
+    },
+    {
+        quote: "Liu has been an incredible partner for Unkey. Whenever we need a sounding board on GTM strategy, Liu is ready to jump in. We see Liu as an extension of our team — she really helps drive our success and growth.",
+        author: "James Perkins",
+        company: "Unkey"
+    },
+    {
+        quote: "Liu is always accessible and genuinely understands the challenges of early-stage companies. She has been crucial in helping us connect with the right customers and clearly define our target audience. Her insights and practical advice have been essential in refining our go-to-market strategy and product direction. Our sessions with her are focused and productive, tackling critical topics with depth.",
+        author: "Aamir Shakir",
+        company: "Mixedbread"
+    },
+    {
+        quote: "Liu is fantastic to work with. She’s easy to talk to and strategically astute. She happily makes intros to her excellent network, and she’s been a tremendous value add at helping us with customer intros.",
+        author: "Zach Long",
+        company: "ConductorAI"
+    },
+    {
+        quote: "Liu has made many an intro to her amazing network of executives, many of whom have made great advisors as we bootstrapped our GTM functions. Liu is also available but not overbearing — if you need help, she is just a text away.",
+        author: "Apurva Mehta",
+        company: "Responsive"
+    },
+    {
+        quote: "Liu has been an invaluable partner to us. She is always readily available when we need her expertise, whether it's about hiring, product, or open source. She is sensitive to our time and proactively offers advice without pushing anything on us.",
+        author: "Peter Marton",
+        company: "OpenMeter"
+    },
+    {
+        quote: "Working with Liu has been one of the best decisions we have made! She helped us on strategically planning out our roadmap, securing key hires, navigating partnerships, and building community and ecosystem.",
+        author: "Yoland Yan",
+        company: "Comfy"
+    }
     ];
     
     const companies = [
@@ -101,7 +149,7 @@
         { company: 'Scroll', industry: 'Crypto', description: 'zkEVM scaling solution for Ethereum', link: 'https://scroll.io/' },
         { company: 'Semgrep', industry: 'Security', description: 'Guiding developers towards secure by default practices', link: 'https://semgrep.dev/' },
         { company: 'Statsig', industry: 'Data', description: 'Feature management and experimentation platform', link: 'https://www.statsig.com/' },
-        { company: 'Tabular (acquired by Databricks)', industry: 'Data', description: 'Storage platform from the creators of Apache Iceberg', link: 'https://tabular.io/' },
+        { company: 'Tabular (Databricks)', industry: 'Data', description: 'Storage platform from the creators of Apache Iceberg', link: 'https://tabular.io/' },
         { company: 'Taktile', industry: 'Fintech', description: 'Automating risk decisions for fintechs and banks', link: 'https://taktile.com/' },
         { company: 'Tecton', industry: 'AI/ML', description: 'Abstracting away data engineering for AI', link: 'https://tecton.ai/' },
         { company: 'Temporal', industry: 'Infra', description: 'Open source durable execution', link: 'https://temporal.io/' },
@@ -114,7 +162,8 @@
         { company: 'Verkada', industry: 'Defense and Hardware', description: 'Integrated physical security platform', link: 'https://www.verkada.com/' },
         { company: 'Warp', industry: 'Developer', description: 'The modern terminal, reimagined with AI', link: 'https://www.warp.dev/' },
         { company: 'Xata', industry: 'Infra', description: 'Serverless data platform for PostgreSQL', link: 'https://xata.io/' },
-        { company: 'Mixedbread', industry: 'AI/ML', description: 'End-to-end search pipeline ', link: 'https://www.mixedbread.ai/' }
+        { company: 'Mixedbread', industry: 'AI/ML', description: 'End-to-end search pipeline ', link: 'https://www.mixedbread.ai/' },
+        { company: 'Slingshot AI', industry: 'Healthcare', description: 'Increasing global access to mental healthcare', link: 'https://www.slingshot.xyz/' }
     ];
 
     let filter = { filter: "All" };
@@ -217,7 +266,6 @@
     let statement2: HTMLDivElement | null = null;
     let portfolio: HTMLDivElement | null = null;
     let testimonials: HTMLDivElement | null = null;
-    let contact: HTMLDivElement | null = null;
 
     const sections: HTMLDivElement[] = [];
 
@@ -227,7 +275,6 @@
         if (statement2) sections.push(statement2);
         if (portfolio) sections.push(portfolio);
         if (testimonials) sections.push(testimonials);
-        if (contact) sections.push(contact);
     }
 
     function handleScroll() {
@@ -258,10 +305,6 @@
 
 
     function parallax() {
-        document.querySelectorAll('.flower').forEach((element) => {
-            (element as HTMLElement).style.marginTop = (-window.scrollY * scrollFactor).toString() + "px";
-        });
-
         if (centerflower) {
             centerflower.style.marginTop = (window.scrollY * 0.5).toString() + "px";
         }
@@ -368,11 +411,22 @@
         return mobileRegex.test(userAgent) && !desktopRegex.test(userAgent);
     }
 
+    let currentScreen = 0; // Track the current screen index
+    const totalScreens = 5;
+
+    function updateScreenIndex() {
+        const screenHeight = window.innerHeight;
+        const scrollPosition = window.scrollY;
+        currentScreen = Math.floor(scrollPosition / screenHeight);
+    }
+
+
     onMount(() => {
 
         loaded = true;
         mobile = isMobileDevice(navigator.userAgent || navigator.vendor || (window as any).opera);
         document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + 'px');
+        window.addEventListener('scroll', updateScreenIndex);
 
         if (!mobile) {
             lastScrollTop = parseInt(localStorage.getItem('lastScrollTop') || '0', 10);
@@ -410,66 +464,7 @@
             });
         });
 
-        // Quotes handler
-        const glide = new Glide('.glide', {
-            type: 'carousel',
-            startAt: 0,
-            perView: 1,
-            autoplay: 3000,
-        }).mount();
-
-        const pause = document.getElementById('pauseButton');
-        const slideCounter = document.getElementById('slideCounter');
-        const totalSlides = quotes.length;
-
-        function updateSlideCounter() {
-            const currentIndex = glide.index + 1; 
-            if (!slideCounter) return;
-            slideCounter.textContent = `${currentIndex} / ${totalSlides}`;
-        }
-
-        updateSlideCounter();
-
-        glide.on('run', function() {
-            updateSlideCounter();
-        });
-
-        function togglePause() {
-            if (isAutoplay) {
-                glide.pause();
-            } else {
-                glide.play();
-            }
-            isAutoplay = !isAutoplay;
-        }
-
-        if (pause) {
-            pause.addEventListener('click', function() {
-                togglePause();
-            });
-        }
-
-        const leftArrow = document.getElementById('leftArrow');
-        const rightArrow = document.getElementById('rightArrow');
-
-        if (leftArrow) {
-            leftArrow.addEventListener('click', function() {
-                if (isAutoplay) {
-                    isAutoplay = false;
-                    glide.pause();
-                }
-                glide.go('<'); 
-            });
-        }
-
-        if (rightArrow) {
-            rightArrow.addEventListener('click', function() {
-                if (isAutoplay) {
-                    isAutoplay = false;
-                    glide.pause();
-                }
-            });
-        }
+        updateScreenIndex();
     });
 </script>
 
@@ -485,91 +480,84 @@
     transition-opacity delay-100 duration-2000
     {visible ? 'opacity-100 grow' : 'opacity-0'}"
     ></div>
-    <div id="full-screen-message" class="fixed inset-0 flex items-center justify-center bg-[#FFDF22] font-arya text-offblack font-bold text-[6vw] opacity-0 transition-opacity duration-1000">GROW WITH SUNFLOWER CAPITAL</div>
+    <div id="full-screen-message" class="fixed inset-0 flex items-center justify-center bg-[#FFDF22] font-arya text-dark-green font-bold text-[6vw] opacity-0 transition-opacity duration-1000">GROW WITH SUNFLOWER CAPITAL</div>
 
     <div id="hero" bind:this={hero} class="w-full h-screen relative overflow-hidden {mobile ? 'bg-dark-green' : ''} {loaded ? '' : 'bg-dark-green'}">
         <div class="title font-arya font-bold transition-all duration-1000 {scrolled ? 'text-offwhite/0' : 'text-offwhite'} {loaded ? 'top-0' : '-top-full'}">SUNFLOWER CAPITAL</div>
-        <div class="flower flower-1 bg-[url('/images/flower-1.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
-        <div class="flower flower-2 bg-[url('/images/flower-2.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-1 bg-[url('/images/flower-1.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-2 bg-[url('/images/flower-2.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
         <div class="flower flower-3 bg-[url('/images/flower-3.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
         <div class="flower flower-5 bg-[url('/images/flower-5.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
-        <div class="flower flower-6 bg-[url('/images/flower-6.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-6 bg-[url('/images/flower-6.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
         <div class="flower flower-7 bg-[url('/images/flower-7.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
         <div class="flower flower-8 bg-[url('/images/flower-8.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
         <div class="flower flower-9 bg-[url('/images/flower-9.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
-        <div class="flower flower-10 bg-[url('/images/flower-10.svg')] {loaded ? '' : 'opacity-0'}"></div>
+        <div class="flower flower-10 bg-[url('/images/flower-10.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
         <div class="flower flower-11 bg-[url('/images/flower-11.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
         <div class="flower flower-12 bg-[url('/images/flower-12.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
-        <div class="flower flower-13 bg-[url('/images/flower-13.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
-        <div class="flower flower-14 bg-[url('/images/flower-14.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
-        <div class="flower flower-15 bg-[url('/images/flower-15.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
+        <div class="flower flower-13 bg-[url('/images/flower-13.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-14 bg-[url('/images/flower-14.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
+        <div class="flower flower-15 bg-[url('/images/flower-15.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
         <div class="flower flower-16 bg-[url('/images/flower-16.svg')] {loaded ? '' : 'opacity-0'} grow"></div>
         <div class="flower flower-17 bg-[url('/images/flower-17.svg')] {loaded ? '' : 'opacity-0'} hover:animate-spin"></div>
     </div>
 
-    <div id="statement1" bind:this={statement1} class="h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-20 xl:gap-28 {mobile ? 'bg-offwhite' : 'bg-transparent'} {loaded ? '' : 'bg-offwhite'}">
+    <div id="statement1" bind:this={statement1} class="h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-6 xl:gap-8 {mobile ? 'bg-offwhite' : 'bg-transparent'} {loaded ? '' : 'bg-offwhite'}">
         <img src="/images/sunflower-logo.svg" alt="Sunflower" class="h-24 sm:h-28 w-auto" />
-        <div class="w-11/12 sm:w-4/5 font-bitter text-offblack text-center">
-            <div class="font-bitter text-offblack w-full text-center flex flex-col justify-center items-center gap-5 lg:gap-8">
-                <div class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl leading-loose sm:leading-loose lg:leading-loose xl:leading-loose">
+        <div class="w-11/12 sm:w-4/5 font-bitter text-dark-green text-center">
+            <div class="font-bitter text-dark-green w-full text-center flex flex-col justify-center items-center gap-5 lg:gap-8">
+                <div class="text-3xl sm:text-4xl lg:text-5xl leading-loose sm:leading-loose lg:leading-loose xl:leading-loose">
                     We invest at the earliest stage in companies building foundational picks and shovels infrastructure.<br>
                 </div>
             </div>
         </div>
-        <Arrow scrollToId="statement2" />
-    </div>    
+    </div>        
 </div>
 
 <div id="statement2" bind:this={statement2} class="h-screen w-full bg-offwhite flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-20 xl:gap-28">
-    <img src="/images/sunflower-logo.svg" alt="Sunflower" class="h-24 sm:h-28 w-auto" />
-    <div class="w-11/12 sm:w-4/5 font-bitter text-offblack text-center">
-        <div class="font-bitter text-offblack w-full text-center flex flex-col justify-center items-center gap-5 lg:gap-8">
-            <div class="text-base sm:text-xl md:text-2xl lg:text-3xl leading-loose text-dark-green">
+    <div class="w-11/12 sm:w-4/5 font-bitter text-dark-green text-center">
+        <div class="font-bitter text-dark-green w-full text-center flex flex-col justify-center items-center gap-10 lg:gap-16">
+            <div class="text-xl sm:text-[1.5rem] leading-loose text-dark-green">
                 We partner with missionary founders who are indefatigable, decisive, and self-aware. <br> <br>
                 We believe in forging highly personal, deep-rooted relationships that stand the test of time. <br> <br>
                 We develop distinct theses on markets and how they will unfold.
             </div>
         </div>
     </div>
-    <Arrow scrollToId="portfolio" />
 </div> 
 
-<div id="portfolio" bind:this={portfolio} class="bg-offwhite text-offblack w-full min-h-screen flex justify-center items-center px-4 sm:px-8 lg:px-32">
+<div id="portfolio" bind:this={portfolio} class="bg-offwhite text-dark-green w-full min-h-screen flex justify-center items-center px-4 sm:px-8 lg:px-32">
     <PortfolioTable {companies} {proxyData} />
 </div>
 
-<div id="testimonials" bind:this={testimonials} class="bg-offwhite text-offblack w-full min-h-screen flex justify-center items-center">
-    <Testimonials {quotes} {loaded} {isAutoplay} />
+<div id="testimonials" bind:this={testimonials} class="bg-offwhite text-dark-green w-full min-h-screen flex justify-center items-center">
+    <Testimonials {quotes} {loaded} />
 </div>
 
-<div id="contact" bind:this={contact} class="bg-offwhite h-screen w-full flex flex-col justify-between px-8 lg:px-24 xl:px-48">
-    <div class="flex-grow flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-10 lg:gap-16 xl:gap-24">
-        <div class="h-48 w-48 lg:h-[17vw] lg:w-[17vw] bg-[url('/images/sample.svg')] bg-contain bg-no-repeat">
-        </div>
-        <div class="flex flex-col items-center justify-center w-full lg:w-1/2 h-auto gap-6 lg:gap-12">
-            <div class="font-bitter text-2xl sm:text-3xl xl:text-4xl text-offblack w-full text-center lg:text-left">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore.
-            </div>
-            <div class="font-bitter text-xl sm:text-2xl text-dark-green text-center lg:text-left w-full">
-                — Liu Jiang, <span class="font-bitter-italic">Sunflower Capital</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="flex justify-center items-center w-full h-20 sm:h-24 bg-offwhite px-4 sm:px-8" id="footer">
+<div class="dot-container">
+    {#each Array(totalScreens) as _, index}
         <div
-            on:click={scrollToTop} 
-            on:keypress={scrollToTop}
-            role="button"
-            tabindex="0"
-            class="text-center cursor-pointer"
-        >
-            <h1 class="font-bitter text-darkish-brown text-sm sm:text-base lg:text-lg xl:text-xl pl-4 sm:pl-8">
-                ↑ Back to Top © Sunflower Capital 2024
-            </h1>
-        </div>
-    </div>
+            class="dot"
+            class:bg-offblack={index === currentScreen}
+            class:bg-[#6D8A54]={index !== currentScreen}
+            class:opacity-20={index !== currentScreen}
+        ></div>
+    {/each}
 </div>
+
+<!-- <div class="flex justify-center items-center w-full h-20 sm:h-24 bg-offwhite px-4 sm:px-8" id="footer">
+    <div
+        on:click={scrollToTop} 
+        on:keypress={scrollToTop}
+        role="button"
+        tabindex="0"
+        class="text-center cursor-pointer"
+    >
+        <h1 class="font-bitter text-darkish-brown text-sm sm:text-base lg:text-lg xl:text-xl pl-4 sm:pl-8">
+            ↑ Back to Top © Sunflower Capital 2024
+        </h1>
+    </div>
+</div> -->
 
 <style lang="css">
     .title {
@@ -585,13 +573,32 @@
 
     .flower {
         position: absolute;
-        transition: transform 2000ms ease-in-out, opacity 2000ms ease-in-out;
+        transition: transform 500ms ease-in-out, opacity 2000ms ease-in-out;
         background-size: contain;            
-        background-repeat: no-repeat;                              
+        background-repeat: no-repeat;                          
     }
 
     .grow:hover {
-        transform: scale(1.5);
+        transform: scale(1.2);
+    }
+
+    .dot-container {
+        position: fixed; 
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 25px; 
+        z-index: 1000;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        background-color: black;
+        border-radius: 50%;
     }
 
     @media (orientation: landscape) {    
