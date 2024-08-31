@@ -121,7 +121,7 @@
         { company: 'Clay', industry: 'SaaS', description: 'Scaling GTM with data enrichment and personalized outreach', link: 'http://clay.com' },
         { company: 'Cohere', industry: 'AI/ML', description: 'LLMs and RAG capabilities for enterprises', link: 'https://cohere.com/' },
         { company: 'Comfy', industry: 'AI/ML', description: 'The ComfyUI company', link: 'https://www.comfy.org/' },
-        { company: 'ConductorAI', industry: 'Defense and Hardware', description: 'Cohere', link: 'https://conductorai.co/' },
+        { company: 'ConductorAI', industry: 'Defense and Hardware', description: 'Providing LLMs and RAG capabilities for enterprises', link: 'https://conductorai.co/' },
         { company: 'DBT', industry: 'Data', description: 'Transforming data in your warehouse', link: 'https://www.getdbt.com/' },
         { company: 'Deel', industry: 'SaaS', description: 'Powering the future of global HR', link: 'https://www.deel.com/' },
         { company: 'E2B', industry: 'AI/ML', description: 'Code interpreting for AI apps', link: 'https://e2b.dev/' },
@@ -507,7 +507,7 @@
         <div class="w-11/12 sm:w-4/5 font-bitter text-dark-green text-center">
             <div class="font-bitter text-dark-green w-full text-center flex flex-col justify-center items-center gap-5 lg:gap-8">
                 <div class="text-3xl sm:text-4xl lg:text-5xl leading-loose sm:leading-loose lg:leading-loose xl:leading-loose">
-                    We invest at the earliest stage in companies building foundational picks and shovels infrastructure.<br>
+                    We invest at the earliest stage in companies building foundational picks and shovels infrastructure.
                 </div>
             </div>
         </div>
@@ -515,9 +515,9 @@
 </div>
 
 <div id="statement2" bind:this={statement2} class="h-screen w-full bg-offwhite flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-20 xl:gap-28">
-    <div class="w-11/12 sm:w-4/5 font-bitter text-dark-green text-center">
+    <div class="w-11/12 font-bitter text-dark-green text-center">
         <div class="font-bitter text-dark-green w-full text-center flex flex-col justify-center items-center gap-10 lg:gap-16">
-            <div class="text-xl sm:text-[1.5rem] leading-loose text-dark-green">
+            <div class="text-xl sm:text-[1.8rem] leading-loose text-dark-green">
                 We partner with missionary founders who are indefatigable, decisive, and self-aware. <br> <br>
                 We believe in forging highly personal, deep-rooted relationships that stand the test of time. <br> <br>
                 We develop distinct theses on markets and how they will unfold.
