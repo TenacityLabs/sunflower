@@ -3,6 +3,7 @@
     import PortfolioTable from '$lib/PortfolioTable.svelte';
     import Testimonials from '$lib/Testimonials.svelte';
     import Glide from '@glidejs/glide';
+    import { fade } from 'svelte/transition';
 
     let index = 0;
     let mobile = false;
@@ -14,6 +15,7 @@
     let scrollingDown = true;
     let centerflower: HTMLElement | null = null;
     const scrollFactor = 0.3;
+    let visibleLines = 0;
 
     const quotes = [
     {
@@ -420,6 +422,17 @@
         currentScreen = Math.floor(scrollPosition / screenHeight);
     }
 
+    function scrollToSection(index: number) {
+    if (sections[index]) {
+        handle = false;
+        setTimeout(() => {
+            handle = true;
+        }, 2100);
+        visible = index === 0;
+        scrollToElement(sections[index], index > currentScreen);
+        currentScreen = index;
+    }
+}
 
     onMount(() => {
 
@@ -465,6 +478,15 @@
         });
 
         updateScreenIndex();
+        const interval = setInterval(() => {
+            if (visibleLines < 3) {
+                visibleLines++;
+            } else {
+                clearInterval(interval);
+            }
+        }, 1500); 
+
+        return () => clearInterval(interval);
     });
 </script>
 
@@ -517,14 +539,26 @@
 <div id="statement2" bind:this={statement2} class="h-screen w-full bg-offwhite flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-24 gap-20 xl:gap-28">
     <div class="w-11/12 font-bitter text-dark-green text-center">
         <div class="font-bitter text-dark-green w-full text-center flex flex-col justify-center items-center gap-10 lg:gap-16">
-            <div class="text-xl sm:text-[1.8rem] leading-loose text-dark-green">
-                We partner with missionary founders who are indefatigable, decisive, and self-aware. <br> <br>
-                We believe in forging highly personal, deep-rooted relationships that stand the test of time. <br> <br>
-                We develop distinct theses on markets and how they will unfold.
+            <div class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl leading-relaxed sm:leading-relaxed lg:leading-relaxed xl:leading-relaxed flex flex-col gap-8 sm:gap-12 lg:gap-16">
+                {#if visibleLines >= 1}
+                    <p transition:fade={{ duration: 1000 }} class="mb-4 sm:mb-6 lg:mb-8">
+                        We partner with missionary founders who are indefatigable, decisive, and self-aware.
+                    </p>
+                {/if}
+                {#if visibleLines >= 2}
+                    <p transition:fade={{ duration: 1000 }} class="mb-4 sm:mb-6 lg:mb-8">
+                        We believe in forging highly personal, deep-rooted relationships that stand the test of time.
+                    </p>
+                {/if}
+                {#if visibleLines >= 3}
+                    <p transition:fade={{ duration: 1000 }} class="mb-4 sm:mb-6 lg:mb-8">
+                        We develop distinct theses on markets and how they will unfold.
+                    </p>
+                {/if}
             </div>
         </div>
     </div>
-</div> 
+</div>
 
 <div id="portfolio" bind:this={portfolio} class="bg-offwhite text-dark-green w-full min-h-screen flex justify-center items-center px-4 sm:px-8 lg:px-32">
     <PortfolioTable {companies} {proxyData} />
@@ -541,6 +575,10 @@
             class:bg-offblack={index === currentScreen}
             class:bg-[#6D8A54]={index !== currentScreen}
             class:opacity-20={index !== currentScreen}
+            on:click={() => scrollToSection(index)}
+            on:keydown={(e) => e.key === 'Enter' && scrollToSection(index)}
+            role="button"
+            tabindex="0"
         ></div>
     {/each}
 </div>
@@ -593,12 +631,17 @@
         gap: 25px; 
         z-index: 1000;
     }
-
     .dot {
         width: 10px;
         height: 10px;
         background-color: black;
         border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .dot:hover {
+        transform: scale(1.2);
     }
 
     @media (orientation: landscape) {    
