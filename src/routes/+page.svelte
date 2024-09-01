@@ -500,9 +500,9 @@
     tabindex="0"
     class="z-10 flower flower-4 bg-[url('/images/flower-4.svg')]  
     transition-opacity delay-100 duration-2000
-    {visible ? 'opacity-100 grow' : 'opacity-0'}"
-    ></div>
-    <div id="full-screen-message" class="fixed inset-0 flex items-center justify-center bg-[#FFDF22] font-arya text-dark-green font-bold text-[6vw] opacity-0 transition-opacity duration-1000">GROW WITH SUNFLOWER CAPITAL</div>
+    {visible ? 'opacity-100 animate-breathe' : 'opacity-0'}"
+></div>
+<div id="full-screen-message" class="fixed inset-0 flex items-center justify-center bg-[#FFDF22] font-arya text-dark-green font-bold text-[6vw] opacity-0 transition-opacity duration-1000">GROW WITH SUNFLOWER CAPITAL</div>
 
     <div id="hero" bind:this={hero} class="w-full h-screen relative overflow-hidden {mobile ? 'bg-dark-green' : ''} {loaded ? '' : 'bg-dark-green'}">
         <div class="title font-arya font-bold transition-all duration-1000 {scrolled ? 'text-offwhite/0' : 'text-offwhite'} {loaded ? 'top-0' : '-top-full'}">SUNFLOWER CAPITAL</div>
@@ -614,6 +614,15 @@
         transition: transform 500ms ease-in-out, opacity 2000ms ease-in-out;
         background-size: contain;            
         background-repeat: no-repeat;                          
+    }
+
+    @keyframes breathe {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+    }
+
+    .animate-breathe {
+        animation: breathe 3s ease-in-out infinite;
     }
 
     .grow:hover {
